@@ -7,7 +7,7 @@ public class Section extends JPanel {
     private final JPanel heading;
     private final JPanel content;
 
-    public Section(String title){
+    public Section(String title, Color headingBackgroundColor, Color contentBackgroundColor){
         super();
         setLayout(new BorderLayout());
         heading = new JPanel();
@@ -18,8 +18,8 @@ public class Section extends JPanel {
         content = new JPanel();
         add(heading,BorderLayout.NORTH);
         add(content,BorderLayout.CENTER);
-        heading.setBackground(Color.GRAY);
-        content.setBackground(Color.LIGHT_GRAY);
+        heading.setBackground(headingBackgroundColor);
+        content.setBackground(contentBackgroundColor);
     }
 
     public JPanel getHeading() {

@@ -4,8 +4,16 @@ import javax.swing.*;
 import java.awt.*;
 
 public class ClientView extends JFrame {
+
+
+    private final Color headingBackgroundColor;
+    private final Color contentBackgroundColor;
+
     public ClientView(){
         super("Client View");
+
+        headingBackgroundColor = Color.GRAY;
+        contentBackgroundColor = Color.LIGHT_GRAY;
 
         JPanel portfolioAndSale = getPortfolioAndSale();
         Section prices = getPriceSection();
@@ -19,19 +27,29 @@ public class ClientView extends JFrame {
         setVisible(true);
     }
 
-    private static JPanel getPortfolioAndSale() {
+    private JPanel getPortfolioAndSale() {
         JPanel portfolioAndSale = new JPanel();
         portfolioAndSale.setLayout(new GridLayout(2,1));
-
-        Section portfolio = new Section("Portfolio");
-        Section sale = new Section("Buy & Sell");
+        SectionWithList portfolio = new SectionWithList("Portfolio",70,headingBackgroundColor,contentBackgroundColor);
+        for (int i = 25; i > 0; i--) {
+            JPanel toAdd = new JPanel();
+            toAdd.setBackground(new Color(3*i,6*i,9*i));
+            portfolio.addElementToList(toAdd);
+        }
+        Section sale = new Section("Buy & Sell",headingBackgroundColor,contentBackgroundColor);
 
         portfolioAndSale.add(portfolio);
         portfolioAndSale.add(sale);
         return portfolioAndSale;
     }
 
-    private Section getPriceSection(){
-        return new Section("Prices");
+    private SectionWithList getPriceSection(){
+        SectionWithList prices = new SectionWithList("Prices",70,headingBackgroundColor,contentBackgroundColor);
+        for (int i = 25; i > 0; i--) {
+            JPanel toAdd = new JPanel();
+            toAdd.setBackground(new Color(9*i,3*i,6*i));
+            prices.addElementToList(toAdd);
+        }
+        return prices;
     }
 }
