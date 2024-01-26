@@ -5,11 +5,8 @@ import java.awt.*;
 
 public class SectionWithList extends Section{
 
-    private final int fixedHeight;
-
-    public SectionWithList(String title, int fixedHeight ,Color headingBackgroundColor, Color contentBackgroundColor){
+    public SectionWithList(String title, Color headingBackgroundColor, Color contentBackgroundColor){
         super(title,headingBackgroundColor,contentBackgroundColor);
-        this.fixedHeight = fixedHeight;
         JPanel content = getContent();
         content.setLayout(new BoxLayout(content,BoxLayout.Y_AXIS));
         content.setAlignmentY(Component.TOP_ALIGNMENT);
@@ -21,8 +18,8 @@ public class SectionWithList extends Section{
     }
 
     public void addElementToList(JPanel element){
-        element.setPreferredSize(new Dimension(getContent().getWidth(),fixedHeight));
-        element.setMaximumSize(new Dimension(Integer.MAX_VALUE,fixedHeight));
+        element.setPreferredSize(new Dimension(getContent().getWidth(),70));
+        element.setMaximumSize(new Dimension(Integer.MAX_VALUE,70));
         getContent().add(element);
     }
 }

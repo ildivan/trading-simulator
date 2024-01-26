@@ -30,12 +30,10 @@ public class ClientView extends JFrame {
     private JPanel getPortfolioAndSale() {
         JPanel portfolioAndSale = new JPanel();
         portfolioAndSale.setLayout(new GridLayout(2,1));
-        SectionWithList portfolio = new SectionWithList("Portfolio",70,headingBackgroundColor,contentBackgroundColor);
-        for (int i = 25; i > 0; i--) {
-            JPanel toAdd = new JPanel();
-            toAdd.setBackground(new Color(3*i,6*i,9*i));
-            portfolio.addElementToList(toAdd);
-        }
+        SectionWithList portfolio = new SectionWithList("Portfolio",headingBackgroundColor,contentBackgroundColor);
+        portfolio.addElementToList(new PortfolioItem("BTC", 20000.0F,3));
+        portfolio.addElementToList(new PortfolioItem("ETH", 400.0F,15));
+        portfolio.addElementToList(new PortfolioItem("TESLA", 320.0F,5));
         Section sale = new Section("Buy & Sell",headingBackgroundColor,contentBackgroundColor);
 
         portfolioAndSale.add(portfolio);
@@ -44,12 +42,6 @@ public class ClientView extends JFrame {
     }
 
     private SectionWithList getPriceSection(){
-        SectionWithList prices = new SectionWithList("Prices",70,headingBackgroundColor,contentBackgroundColor);
-        for (int i = 25; i > 0; i--) {
-            JPanel toAdd = new JPanel();
-            toAdd.setBackground(new Color(9*i,3*i,6*i));
-            prices.addElementToList(toAdd);
-        }
-        return prices;
+        return new SectionWithList("Prices",headingBackgroundColor,contentBackgroundColor);
     }
 }
