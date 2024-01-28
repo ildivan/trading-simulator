@@ -1,12 +1,14 @@
 package GUI;
 
 import javax.swing.*;
+import javax.swing.plaf.basic.BasicScrollBarUI;
 import java.awt.*;
 import java.util.ArrayList;
 
 public class SectionWithList<T extends JPanel> extends Section{
 
     private final ArrayList<T> list;
+    private static final int SCROLL_SPEED = 15;
 
     public SectionWithList(String title){
         super(title);
@@ -18,6 +20,15 @@ public class SectionWithList<T extends JPanel> extends Section{
         JScrollPane scrollPane = new JScrollPane(content);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        JScrollBar scrollBar = scrollPane.getVerticalScrollBar();
+        scrollBar.setUnitIncrement(SCROLL_SPEED);
+        scrollBar.setUI(new BasicScrollBarUI() {
+            @Override
+            protected void configureScrollBarColors() {
+                this.thumbColor = ClientView.HEADING_BACKGROUND_COLOR;
+                this.trackColor = ClientView.CONTENT_BACKGROUND_COLOR;
+            }
+        });
         add(scrollPane);
     }
 
