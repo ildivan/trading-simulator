@@ -4,34 +4,30 @@ import javax.swing.*;
 import java.awt.*;
 
 public class PortfolioItem extends JPanel {
-    private final String name;
-    private float price;
-    private int quantity;
+    private JLabel nameLabel;
+    private JLabel quantityLabel;
+    private JLabel valueLabel;
 
-    public PortfolioItem(String name, float price, int quantity){
+    public PortfolioItem(String name, int quantity, float value){
         super();
-        this.name = name;
-        this.price = price;
-        this.quantity = quantity;
-        setLayout(new BorderLayout());
+        setLayout(new BorderLayout(0,0));
         setBackground(ClientView.CONTENT_BACKGROUND_COLOR);
-        setupLabels();
+        setupLabels(name, quantity, value);
     }
 
-    private void setupLabels(){
+    private void setupLabels(String name, int quantity, float value){
 
-        JLabel nameLabel = setupLabel(name);
+        nameLabel = setupLabel(name);
         nameLabel.setBorder(BorderFactory.createEmptyBorder(0, 30, 0, 0));
         add(nameLabel,BorderLayout.WEST);
 
 
-        JLabel quantityLabel = setupLabel("Q: " + quantity);
+        quantityLabel = setupLabel("Q: " + quantity);
         quantityLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         quantityLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 30));
         add(quantityLabel,BorderLayout.CENTER);
 
-        float value = price * (float)quantity;
-        JLabel valueLabel = setupLabel("$" + value);
+        valueLabel = setupLabel("$" + value);
         valueLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 30));
         add(valueLabel,BorderLayout.EAST);
     }
@@ -44,11 +40,11 @@ public class PortfolioItem extends JPanel {
         return label;
     }
 
-    public void setPrice(float price) {
-        this.price = price;
+    public void setQuantity(int quantity) {
+        quantityLabel.setText("Q: " + quantity);
     }
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
+    public void setValue(float value) {
+        valueLabel.setText("$" + value);
     }
 }

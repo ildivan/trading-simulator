@@ -1,6 +1,7 @@
 package GUI;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 public class Section extends JPanel {
@@ -9,7 +10,7 @@ public class Section extends JPanel {
 
     public Section(String title){
         super();
-        setLayout(new BorderLayout());
+        setLayout(new BorderLayout(0,0));
         heading = new JPanel();
         JLabel headingTitle = new JLabel();
         headingTitle.setFont(ClientView.HEADING_FONT);

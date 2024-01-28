@@ -4,33 +4,31 @@ import javax.swing.*;
 import java.awt.*;
 
 public class PriceItem extends JPanel {
-    private String name;
-    private float price;
-    private boolean isRising;
+    private JLabel nameLabel;
+    private JLabel priceLabel;
+    private JLabel isRisingLabel;
 
     public PriceItem(String name, float price, boolean isRising) {
-        this.name = name;
-        this.price = price;
-        this.isRising = isRising;
-        setLayout(new BorderLayout());
+        setLayout(new BorderLayout(0,0));
         setBackground(ClientView.CONTENT_BACKGROUND_COLOR);
-        setupLabels();
+        setupLabels(name, price, isRising);
     }
 
-    private void setupLabels() {
+    private void setupLabels(String name, float price, boolean isRising) {
 
-        JLabel nameLabel = setupLabel(name);
+        nameLabel = setupLabel(name);
         nameLabel.setBorder(BorderFactory.createEmptyBorder(0, 30, 0, 0));
         add(nameLabel,BorderLayout.WEST);
 
-        JLabel priceLabel = setupLabel("$"+price);
+        priceLabel = setupLabel("$"+price);
         priceLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         priceLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 30));
         add(priceLabel,BorderLayout.CENTER);
 
-        JLabel risingLabel = setupLabel("-");
-        risingLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 30));
-        add(risingLabel,BorderLayout.EAST);
+        isRisingLabel = setupLabel("-");
+        setRisingStatus(isRising);
+        isRisingLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 30));
+        add(isRisingLabel,BorderLayout.EAST);
     }
 
     private JLabel setupLabel(String text) {
@@ -39,5 +37,19 @@ public class PriceItem extends JPanel {
         label.setFont(ClientView.CONTENT_FONT);
         label.setForeground(ClientView.FONT_COLOR);
         return label;
+    }
+
+    public void setRisingStatus(boolean isRising) {
+        if(isRising){
+            isRisingLabel.setText("￪");
+            isRisingLabel.setForeground(Color.GREEN);
+            return;
+        }
+        isRisingLabel.setText("↓");
+        isRisingLabel.setForeground(Color.RED);
+    }
+
+    public void setPrice(float price){
+        priceLabel.setText("$"+price);
     }
 }
