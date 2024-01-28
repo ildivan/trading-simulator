@@ -7,19 +7,20 @@ public class Section extends JPanel {
     private final JPanel heading;
     private final JPanel content;
 
-    public Section(String title, Color headingBackgroundColor, Color contentBackgroundColor){
+    public Section(String title){
         super();
         setLayout(new BorderLayout());
         heading = new JPanel();
         JLabel headingTitle = new JLabel();
-        headingTitle.setFont(new Font("Times New Roman",Font.PLAIN,24));
+        headingTitle.setFont(ClientView.HEADING_FONT);
+        headingTitle.setForeground(ClientView.FONT_COLOR);
         headingTitle.setText(title);
         heading.add(headingTitle);
         content = new JPanel();
         add(heading,BorderLayout.NORTH);
         add(content,BorderLayout.CENTER);
-        heading.setBackground(headingBackgroundColor);
-        content.setBackground(contentBackgroundColor);
+        heading.setBackground(ClientView.HEADING_BACKGROUND_COLOR);
+        content.setBackground(ClientView.CONTENT_BACKGROUND_COLOR);
     }
 
     public JPanel getHeading() {

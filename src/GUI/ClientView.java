@@ -6,14 +6,14 @@ import java.awt.*;
 public class ClientView extends JFrame {
 
 
-    private final Color headingBackgroundColor;
-    private final Color contentBackgroundColor;
+    public static final Color HEADING_BACKGROUND_COLOR = Color.GRAY;
+    public static final Color CONTENT_BACKGROUND_COLOR = Color.DARK_GRAY;
+    public static final Color FONT_COLOR = Color.WHITE;
+    public static final Font HEADING_FONT = new Font("Times New Roman",Font.PLAIN,24);
+    public static final Font CONTENT_FONT = new Font("Times New Roman",Font.PLAIN,16);
 
     public ClientView(){
         super("Client View");
-
-        headingBackgroundColor = Color.GRAY;
-        contentBackgroundColor = Color.LIGHT_GRAY;
 
         JPanel portfolioAndSale = getPortfolioAndSale();
         Section prices = getPriceSection();
@@ -30,11 +30,11 @@ public class ClientView extends JFrame {
     private JPanel getPortfolioAndSale() {
         JPanel portfolioAndSale = new JPanel();
         portfolioAndSale.setLayout(new GridLayout(2,1));
-        SectionWithList portfolio = new SectionWithList("Portfolio",headingBackgroundColor,contentBackgroundColor);
+        SectionWithList portfolio = new SectionWithList("Portfolio");
         portfolio.addElementToList(new PortfolioItem("BTC", 20000.0F,3));
         portfolio.addElementToList(new PortfolioItem("ETH", 400.0F,15));
         portfolio.addElementToList(new PortfolioItem("TESLA", 320.0F,5));
-        Section sale = new Section("Buy & Sell",headingBackgroundColor,contentBackgroundColor);
+        Section sale = new Section("Buy & Sell");
 
         portfolioAndSale.add(portfolio);
         portfolioAndSale.add(sale);
@@ -42,6 +42,10 @@ public class ClientView extends JFrame {
     }
 
     private SectionWithList getPriceSection(){
-        return new SectionWithList("Prices",headingBackgroundColor,contentBackgroundColor);
+        SectionWithList prices = new SectionWithList("Prices");
+        prices.addElementToList(new PriceItem("BTC",20000.0F,true));
+        prices.addElementToList(new PriceItem("ETH",400.0F,true));
+        prices.addElementToList(new PriceItem("TESLA",320.0F,true));
+        return prices;
     }
 }

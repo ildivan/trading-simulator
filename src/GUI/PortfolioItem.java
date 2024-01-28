@@ -14,32 +14,33 @@ public class PortfolioItem extends JPanel {
         this.price = price;
         this.quantity = quantity;
         setLayout(new BorderLayout());
+        setBackground(ClientView.CONTENT_BACKGROUND_COLOR);
         setupLabels();
     }
 
     private void setupLabels(){
-        Font font = new Font("Times New Roman",Font.PLAIN,16);
 
-        JLabel nameLabel = setupLabel(name, font);
+        JLabel nameLabel = setupLabel(name);
         nameLabel.setBorder(BorderFactory.createEmptyBorder(0, 30, 0, 0));
         add(nameLabel,BorderLayout.WEST);
 
 
-        JLabel quantityLabel = setupLabel("Q: " + quantity, font );
+        JLabel quantityLabel = setupLabel("Q: " + quantity);
         quantityLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         quantityLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 30));
         add(quantityLabel,BorderLayout.CENTER);
 
         float value = price * (float)quantity;
-        JLabel valueLabel = setupLabel("$" + value, font);
+        JLabel valueLabel = setupLabel("$" + value);
         valueLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 30));
         add(valueLabel,BorderLayout.EAST);
     }
 
-    private JLabel setupLabel(String text, Font font){
+    private JLabel setupLabel(String text){
         JLabel label = new JLabel();
         label.setText(text);
-        label.setFont(font);
+        label.setFont(ClientView.CONTENT_FONT);
+        label.setForeground(ClientView.FONT_COLOR);
         return label;
     }
 

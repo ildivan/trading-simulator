@@ -5,8 +5,8 @@ import java.awt.*;
 
 public class SectionWithList extends Section{
 
-    public SectionWithList(String title, Color headingBackgroundColor, Color contentBackgroundColor){
-        super(title,headingBackgroundColor,contentBackgroundColor);
+    public SectionWithList(String title){
+        super(title);
         JPanel content = getContent();
         content.setLayout(new BoxLayout(content,BoxLayout.Y_AXIS));
         content.setAlignmentY(Component.TOP_ALIGNMENT);
