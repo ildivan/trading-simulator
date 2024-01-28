@@ -1,6 +1,7 @@
 package GUI;
 
 import javax.swing.*;
+import javax.swing.plaf.basic.BasicArrowButton;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 import java.awt.*;
 import java.util.ArrayList;
@@ -27,6 +28,25 @@ public class SectionWithList<T extends JPanel> extends Section{
             protected void configureScrollBarColors() {
                 this.thumbColor = ClientView.HEADING_BACKGROUND_COLOR;
                 this.trackColor = ClientView.CONTENT_BACKGROUND_COLOR;
+            }
+
+            @Override
+            protected JButton createDecreaseButton(int orientation) {
+                return new BasicArrowButton(orientation) {
+                    {
+                        setBackground(ClientView.HEADING_BACKGROUND_COLOR);
+                    }
+                };
+            }
+
+            @Override
+            protected JButton createIncreaseButton(int orientation) {
+                return new BasicArrowButton(orientation) {
+                    {
+                        setBackground(ClientView.HEADING_BACKGROUND_COLOR);
+                        setForeground(ClientView.HEADING_BACKGROUND_COLOR);
+                    }
+                };
             }
         });
         add(scrollPane);

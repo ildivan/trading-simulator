@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class ClientView extends JFrame {
-    public static final Color HEADING_BACKGROUND_COLOR = Color.GRAY;
+    public static final Color HEADING_BACKGROUND_COLOR = new Color(0x555557);
     public static final Color CONTENT_BACKGROUND_COLOR = Color.DARK_GRAY;
     public static final Color FONT_COLOR = Color.WHITE;
     public static final Font HEADING_FONT = new Font("Times New Roman",Font.PLAIN,24);
