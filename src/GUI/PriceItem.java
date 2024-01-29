@@ -7,6 +7,7 @@ public class PriceItem extends JPanel {
     private JLabel nameLabel;
     private JLabel priceLabel;
     private JLabel isRisingLabel;
+    private static final Font ARROW_FONT = new Font("Times New Roman",Font.BOLD, 25);
 
     public PriceItem(String name, float price, boolean isRising) {
         setLayout(new BorderLayout(0,0));
@@ -40,6 +41,7 @@ public class PriceItem extends JPanel {
     }
 
     public void setRisingStatus(boolean isRising) {
+        isRisingLabel.setFont(ARROW_FONT);
         if(isRising){
             isRisingLabel.setText("￪");
             isRisingLabel.setForeground(Color.GREEN);
