@@ -24,7 +24,6 @@ public class ClientView extends JFrame {
         setLayout(new GridLayout(1,2,0,0));
         add(portfolioAndSale);
         add(prices);
-
         setVisible(true);
     }
 
@@ -36,7 +35,7 @@ public class ClientView extends JFrame {
         portfolio.addElementToList(new PortfolioItem("ETH", 15,6000.F));
         portfolio.addElementToList(new PortfolioItem("TESLA", 5,1600.F));
 
-        sale = new SalePanel("BUY & SELL");
+        sale = new SalePanel("BUY & SELL","BTC","ETH","TESLA");
 
         portfolioAndSale.add(portfolio);
         portfolioAndSale.add(sale);
