@@ -2,6 +2,7 @@ package GUI;
 
 import javax.sound.sampled.Port;
 import javax.swing.*;
+import javax.swing.text.AbstractDocument;
 import java.awt.*;
 
 public class ClientView extends JFrame {
@@ -35,7 +36,8 @@ public class ClientView extends JFrame {
         portfolio.addElementToList(new PortfolioItem("ETH", 15,6000.F));
         portfolio.addElementToList(new PortfolioItem("TESLA", 5,1600.F));
 
-        sale = new SalePanel("BUY & SELL","BTC","ETH","TESLA");
+        sale = new SalePanel("BUY & SELL");
+        sale.setSelectionStocks("BTC","ETH","TESLA");
 
         portfolioAndSale.add(portfolio);
         portfolioAndSale.add(sale);

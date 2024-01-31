@@ -43,7 +43,7 @@ public class PriceItem extends JPanel {
     public void setRisingStatus(boolean isRising) {
         isRisingLabel.setFont(ARROW_FONT);
         if(isRising){
-            isRisingLabel.setText("￪");
+            isRisingLabel.setText("↑");
             isRisingLabel.setForeground(Color.GREEN);
             return;
         }

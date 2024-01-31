@@ -1,19 +1,66 @@
 package GUI;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DocumentFilter;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-public class SalePanel extends Section {
+public class SalePanel extends Section implements ActionListener {
     private JRadioButton buyButton;
     private JRadioButton sellButton;
-    private String[] stocks;
-    public SalePanel(String title, String... stocks) {
+    private JComboBox<String> stockSelection;
+    private JPanel selectStockPanel;
+    private JTextField quantityField;
+    private JButton purchaseButton;
+    private static final Font INPUT_FONT = new Font("TImes New Roman",Font.BOLD,16);
+    private final ChangeListener BUY_CHANGE_LISTENER;
+    private final ChangeListener SELL_CHANGE_LISTENER;
+
+    ;
+    public SalePanel(String title) {
         super(title);
+
+        BUY_CHANGE_LISTENER  = (evt) -> {
+            ButtonModel model = purchaseButton.getModel();
+            if(model.isRollover()){
+                purchaseButton.setBackground(new Color(0x2eab3f));
+            }else{
+                purchaseButton.setBackground(new Color(0x45ff5e));
+            }
+        };
+
+        SELL_CHANGE_LISTENER  = (evt) -> {
+            ButtonModel model = purchaseButton.getModel();
+            if(model.isRollover()){
+                purchaseButton.setBackground(new Color(0xc43623));
+            }else{
+                purchaseButton.setBackground(new Color(0xE84A36));
+            }
+        };
+
         JPanel content = getContent();
         content.setLayout(new GridLayout(4,1,0,0));
         setupBuyOrSellChoicePanel();
-        setupSelectStockPanel(stocks);
+        setupSelectStockPanel();
+        setupInsertQuantityPanel();
+        setupPurchaseButton();
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent actionEvent) {
+        if(actionEvent.getSource() == buyButton){
+            setPurchaseButtonToBuy();
+        }else if(actionEvent.getSource() == sellButton){
+            setPurchaseButtonToSell();
+        }
     }
 
     private void setupBuyOrSellChoicePanel(){
@@ -27,6 +74,9 @@ public class SalePanel extends Section {
         setupRadioButton(sellButton);
         buyButton.setBorder(new EmptyBorder(0,0,0,20));
         sellButton.setBorder(new EmptyBorder(0,20,0,0));
+
+        buyButton.addActionListener(this);
+        sellButton.addActionListener(this);
 
         buyAndSellGroup.add(buyButton);
         buyAndSellGroup.add(sellButton);
@@ -45,8 +95,8 @@ public class SalePanel extends Section {
         button.setFocusable(false);
     }
 
-    private void setupSelectStockPanel(String... stocks) {
-        JPanel selectStockPanel = new JPanel();
+    private void setupSelectStockPanel() {
+        selectStockPanel = new JPanel();
         selectStockPanel.setLayout(new BoxLayout(selectStockPanel,BoxLayout.X_AXIS));
         selectStockPanel.add(Box.createGlue());
 
@@ -55,20 +105,108 @@ public class SalePanel extends Section {
         selectStockText.setFont(ClientView.CONTENT_FONT);
         selectStockText.setForeground(ClientView.FONT_COLOR);
         selectStockText.setHorizontalAlignment(SwingConstants.CENTER);
+        selectStockText.setBorder(new EmptyBorder(0,0,0,30));
         selectStockPanel.add(selectStockText);
 
-        JComboBox<String> stockSelection = new JComboBox<>(stocks);
+        stockSelection = new JComboBox<>();
         stockSelection.setPreferredSize(new Dimension(160,40));
         stockSelection.setMaximumSize(new Dimension(160,40));
-        stockSelection.setFont(new Font("TImes New Roman",Font.BOLD,16));
+        stockSelection.setFont(INPUT_FONT);
         stockSelection.setBackground(ClientView.HEADING_BACKGROUND_COLOR);
         stockSelection.setForeground(ClientView.FONT_COLOR);
+        stockSelection.setFocusable(false);
         selectStockPanel.add(stockSelection);
-
-        selectStockText.setBorder(new EmptyBorder(0,0,0,30));
 
         selectStockPanel.add(Box.createGlue());
         selectStockPanel.setBackground(ClientView.CONTENT_BACKGROUND_COLOR);
         getContent().add(selectStockPanel);
+    }
+
+    public void setSelectionStocks(String... stocks){
+        stockSelection.removeAllItems();
+        for(int i = 0; i < stocks.length; i++){
+            stockSelection.insertItemAt(stocks[i],i);
+        }
+        stockSelection.setSelectedIndex(0);
+    }
+
+
+    private void setupInsertQuantityPanel() {
+        JPanel quantityPanel = new JPanel();
+        quantityPanel.setLayout(new BoxLayout(quantityPanel,BoxLayout.X_AXIS));
+        quantityPanel.add(Box.createGlue());
+
+        JLabel selectQuantityLabel = new JLabel();
+        selectQuantityLabel.setText("Select quantity: ");
+        selectQuantityLabel.setFont(ClientView.CONTENT_FONT);
+        selectQuantityLabel.setForeground(ClientView.FONT_COLOR);
+        selectQuantityLabel.setBorder(new EmptyBorder(0,0,0,30));
+
+        quantityField = new JTextField();
+        quantityField.setPreferredSize(new Dimension(100, 40));
+        quantityField.setMaximumSize(new Dimension(100, 40));
+        quantityField.setHorizontalAlignment(JTextField.RIGHT);
+        quantityField.setBackground(ClientView.HEADING_BACKGROUND_COLOR);
+        quantityField.setFont(INPUT_FONT);
+        quantityField.setForeground(ClientView.FONT_COLOR);
+        quantityField.setCaretColor(ClientView.FONT_COLOR);
+
+        ((AbstractDocument) quantityField.getDocument()).setDocumentFilter(new NumericFilter());
+
+        quantityPanel.add(selectQuantityLabel);
+        quantityPanel.add(quantityField);
+        quantityPanel.add(Box.createGlue());
+        quantityPanel.setBackground(ClientView.CONTENT_BACKGROUND_COLOR);
+        getContent().add(quantityPanel);
+    }
+
+    private static class NumericFilter extends DocumentFilter {
+        @Override
+        public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
+            // Allow only numeric characters to be inserted
+            if (string.matches("\\d+")) {
+                super.insertString(fb, offset, string, attr);
+            }
+        }
+
+        @Override
+        public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
+            // Allow only numeric characters to replace existing text
+            if (text.matches("\\d+")) {
+                super.replace(fb, offset, length, text, attrs);
+            }
+        }
+    }
+
+    private void setupPurchaseButton(){
+        JPanel purchaseButtonPanel = new JPanel();
+        purchaseButtonPanel.setLayout(new BoxLayout(purchaseButtonPanel,BoxLayout.X_AXIS));
+        purchaseButtonPanel.setBackground(ClientView.CONTENT_BACKGROUND_COLOR);
+        purchaseButtonPanel.add(Box.createGlue());
+
+        purchaseButton = new JButton();
+        purchaseButton.setPreferredSize(new Dimension(150, 60));
+        purchaseButton.setMaximumSize(new Dimension(150, 60));
+        purchaseButton.setFont(ClientView.HEADING_FONT);
+        purchaseButton.setFocusable(false);
+        purchaseButton.setBorder(new EmptyBorder(0,0,0,0));
+        setPurchaseButtonToBuy();
+
+        purchaseButtonPanel.add(purchaseButton);
+        purchaseButtonPanel.add(Box.createGlue());
+        getContent().add(purchaseButtonPanel);
+    }
+
+    private void setPurchaseButtonToBuy(){
+        purchaseButton.setText("Buy");
+        purchaseButton.setBackground(new Color(0x45ff5e));
+        purchaseButton.removeChangeListener(SELL_CHANGE_LISTENER);
+        purchaseButton.addChangeListener(BUY_CHANGE_LISTENER);
+    }
+    private void setPurchaseButtonToSell(){
+        purchaseButton.setText("Sell");
+        purchaseButton.setBackground(new Color(0xff3838));
+        purchaseButton.removeChangeListener(BUY_CHANGE_LISTENER);
+        purchaseButton.addChangeListener(SELL_CHANGE_LISTENER);
     }
 }
