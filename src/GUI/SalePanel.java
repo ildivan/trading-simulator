@@ -1,9 +1,7 @@
 package GUI;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.AttributeSet;
@@ -60,6 +58,10 @@ public class SalePanel extends Section implements ActionListener {
             setPurchaseButtonToBuy();
         }else if(actionEvent.getSource() == sellButton){
             setPurchaseButtonToSell();
+        }else if(actionEvent.getSource() == purchaseButton){
+            System.out.println("Type of order: " + (isSetToBuy() ? "Buy" : "Sell"));
+            System.out.println("Selected stock: " + getSelectedStock());
+            System.out.println("Selected quantity: " + getStockQuantity());
         }
     }
 
@@ -190,6 +192,7 @@ public class SalePanel extends Section implements ActionListener {
         purchaseButton.setFont(ClientView.HEADING_FONT);
         purchaseButton.setFocusable(false);
         purchaseButton.setBorder(new EmptyBorder(0,0,0,0));
+        purchaseButton.addActionListener(this);
         setPurchaseButtonToBuy();
 
         purchaseButtonPanel.add(purchaseButton);
@@ -208,5 +211,17 @@ public class SalePanel extends Section implements ActionListener {
         purchaseButton.setBackground(new Color(0xff3838));
         purchaseButton.removeChangeListener(BUY_CHANGE_LISTENER);
         purchaseButton.addChangeListener(SELL_CHANGE_LISTENER);
+    }
+
+    public boolean isSetToBuy(){
+        return buyButton.isSelected();
+    }
+
+    public String getSelectedStock(){
+        return (String) stockSelection.getSelectedItem();
+    }
+
+    public int getStockQuantity(){
+        return (quantityField.getText().isBlank() ? 0 : Integer.parseInt(quantityField.getText()));
     }
 }

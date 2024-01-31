@@ -1,8 +1,6 @@
 package GUI;
 
-import javax.sound.sampled.Port;
 import javax.swing.*;
-import javax.swing.text.AbstractDocument;
 import java.awt.*;
 
 public class ClientView extends JFrame {
@@ -14,6 +12,7 @@ public class ClientView extends JFrame {
     private SectionWithList<PortfolioItem> portfolio;
     private SectionWithList<PriceItem> prices;
     private SalePanel sale;
+
     public ClientView(){
         super("Client View");
 
