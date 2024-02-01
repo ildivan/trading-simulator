@@ -1,6 +1,7 @@
 package GUI;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicArrowButton;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 import java.awt.*;
@@ -19,6 +20,7 @@ public class SectionWithList<T extends JPanel> extends Section{
         content.setAlignmentY(Component.TOP_ALIGNMENT);
 
         JScrollPane scrollPane = new JScrollPane(content);
+        scrollPane.setBorder(new EmptyBorder(0,0,0,0));
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         JScrollBar scrollBar = scrollPane.getVerticalScrollBar();

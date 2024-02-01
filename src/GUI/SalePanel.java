@@ -27,6 +27,7 @@ public class SalePanel extends Section implements ActionListener {
         super(title);
 
         BUY_CHANGE_LISTENER  = (evt) -> {
+            UIManager.put("Button.select", new Color(0x28FF26));
             ButtonModel model = purchaseButton.getModel();
             if(model.isRollover()){
                 purchaseButton.setBackground(new Color(0x2eab3f));
@@ -36,6 +37,7 @@ public class SalePanel extends Section implements ActionListener {
         };
 
         SELL_CHANGE_LISTENER  = (evt) -> {
+            UIManager.put("Button.select", new Color(0xFF1919));
             ButtonModel model = purchaseButton.getModel();
             if(model.isRollover()){
                 purchaseButton.setBackground(new Color(0xc43623));

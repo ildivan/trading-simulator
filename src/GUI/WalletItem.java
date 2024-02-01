@@ -3,12 +3,12 @@ package GUI;
 import javax.swing.*;
 import java.awt.*;
 
-public class PortfolioItem extends JPanel {
+public class WalletItem extends JPanel {
     private JLabel nameLabel;
     private JLabel quantityLabel;
     private JLabel valueLabel;
 
-    public PortfolioItem(String name, int quantity, float value){
+    public WalletItem(String name, int quantity, float value){
         super();
         setLayout(new BorderLayout(0,0));
         setBackground(ClientView.CONTENT_BACKGROUND_COLOR);
