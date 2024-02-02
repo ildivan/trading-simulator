@@ -2,8 +2,10 @@ package GUI;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
-public class WalletItem extends JPanel {
+public class WalletItem extends ListItem {
     private JLabel nameLabel;
     private JLabel quantityLabel;
     private JLabel valueLabel;
@@ -11,7 +13,6 @@ public class WalletItem extends JPanel {
     public WalletItem(String name, int quantity, float value){
         super();
         setLayout(new BorderLayout(0,0));
-        setBackground(ClientView.CONTENT_BACKGROUND_COLOR);
         setupLabels(name, quantity, value);
     }
 
@@ -47,4 +48,6 @@ public class WalletItem extends JPanel {
     public void setValue(float value) {
         valueLabel.setText("$" + value);
     }
+
+
 }

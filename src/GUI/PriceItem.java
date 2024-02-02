@@ -2,8 +2,10 @@ package GUI;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
-public class PriceItem extends JPanel {
+public class PriceItem extends ListItem {
     private JLabel nameLabel;
     private JLabel priceLabel;
     private JLabel isRisingLabel;
@@ -11,7 +13,6 @@ public class PriceItem extends JPanel {
 
     public PriceItem(String name, float price, boolean isRising) {
         setLayout(new BorderLayout(0,0));
-        setBackground(ClientView.CONTENT_BACKGROUND_COLOR);
         setupLabels(name, price, isRising);
     }
 

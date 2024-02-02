@@ -2,6 +2,7 @@ package GUI;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
 public class ClientView extends JFrame {
     public static final Color HEADING_BACKGROUND_COLOR = new Color(0x555557);
@@ -9,9 +10,10 @@ public class ClientView extends JFrame {
     public static final Color FONT_COLOR = Color.WHITE;
     public static final Font HEADING_FONT = new Font("Times New Roman",Font.PLAIN,24);
     public static final Font CONTENT_FONT = new Font("Times New Roman",Font.PLAIN,16);
+    public static final Color SELECTED_COLOR = new Color(0x464444);
     private CustomTabbedPane tabs;
     private SectionWithList<WalletItem> wallet;
-    private SectionWithList<JPanel> orders;
+    private SectionWithList<OrderItem> orders;
     private SectionWithList<PriceItem> prices;
     private SalePanel sale;
 
@@ -89,7 +91,16 @@ public class ClientView extends JFrame {
         saleAndGraph.setBorder(BorderFactory.createMatteBorder(0, 2, 0, 0, ClientView.HEADING_BACKGROUND_COLOR));
         saleAndGraph.setLayout(new GridLayout(2,1,0,0));
 
-        Section graph = new Section("GRAPH");
+        ArrayList<Double> pricesForGraph = new ArrayList<>();
+        pricesForGraph.add(123.0);
+        pricesForGraph.add(13.0);
+        pricesForGraph.add(193.0);
+        pricesForGraph.add(200.0);
+        pricesForGraph.add(9.0);
+        pricesForGraph.add(300.0);
+        pricesForGraph.add(145.0);
+        GraphSection graph = new GraphSection("GRAPH",pricesForGraph);
+
 
         sale = new SalePanel("BUY & SELL");
         sale.setSelectionStocks("BTC","ETH","TESLA");

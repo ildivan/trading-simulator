@@ -46,7 +46,6 @@ public class SalePanel extends Section implements ActionListener {
             }
         };
 
-        JPanel content = getContent();
         content.setLayout(new GridLayout(4,1,0,0));
         setupBuyOrSellChoicePanel();
         setupSelectStockPanel();
@@ -89,7 +88,7 @@ public class SalePanel extends Section implements ActionListener {
         buyAndSellChoicePanel.add(sellButton);
         buyAndSellChoicePanel.add(Box.createGlue());
         buyAndSellChoicePanel.setBackground(ClientView.CONTENT_BACKGROUND_COLOR);
-        getContent().add(buyAndSellChoicePanel);
+        content.add(buyAndSellChoicePanel);
     }
 
     private void setupRadioButton(JRadioButton button){
@@ -123,7 +122,7 @@ public class SalePanel extends Section implements ActionListener {
 
         selectStockPanel.add(Box.createGlue());
         selectStockPanel.setBackground(ClientView.CONTENT_BACKGROUND_COLOR);
-        getContent().add(selectStockPanel);
+        content.add(selectStockPanel);
     }
 
     public void setSelectionStocks(String... stocks){
@@ -161,7 +160,7 @@ public class SalePanel extends Section implements ActionListener {
         quantityPanel.add(quantityField);
         quantityPanel.add(Box.createGlue());
         quantityPanel.setBackground(ClientView.CONTENT_BACKGROUND_COLOR);
-        getContent().add(quantityPanel);
+        content.add(quantityPanel);
     }
 
     private static class NumericFilter extends DocumentFilter {
@@ -199,7 +198,7 @@ public class SalePanel extends Section implements ActionListener {
 
         purchaseButtonPanel.add(purchaseButton);
         purchaseButtonPanel.add(Box.createGlue());
-        getContent().add(purchaseButtonPanel);
+        content.add(purchaseButtonPanel);
     }
 
     private void setPurchaseButtonToBuy(){

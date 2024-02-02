@@ -5,7 +5,7 @@ import java.awt.*;
 
 public class Section extends JPanel {
     private final JPanel heading;
-    private final JPanel content;
+    protected JPanel content;
 
     public Section(String title){
         super();
