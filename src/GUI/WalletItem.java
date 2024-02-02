@@ -12,6 +12,7 @@ public class WalletItem extends ListItem {
 
     public WalletItem(String name, int quantity, float value){
         super();
+        removeMouseListener(this);
         setLayout(new BorderLayout(0,0));
         setupLabels(name, quantity, value);
     }
