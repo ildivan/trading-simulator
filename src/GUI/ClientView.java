@@ -3,6 +3,8 @@ package GUI;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 public class ClientView extends JFrame {
     public static final Color HEADING_BACKGROUND_COLOR = new Color(0x555557);
@@ -15,6 +17,7 @@ public class ClientView extends JFrame {
     private SectionWithList<WalletItem> wallet;
     private SectionWithList<OrderItem> orders;
     private SectionWithList<PriceItem> prices;
+    private GraphSection graph;
     private SalePanel sale;
 
     static class CustomTabbedPane extends JTabbedPane {
@@ -59,9 +62,6 @@ public class ClientView extends JFrame {
         walletAndOrders.setBackground(ClientView.CONTENT_BACKGROUND_COLOR);
         wallet = new SectionWithList<>("WALLET");
         wallet.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 2, ClientView.HEADING_BACKGROUND_COLOR));
-        wallet.addElementToList(new WalletItem("BTC", 3,60000.F));
-        wallet.addElementToList(new WalletItem("ETH", 15,6000.F));
-        wallet.addElementToList(new WalletItem("TESLA", 5,1600.F));
 
         JPanel ordersAndStatus = new JPanel();
         ordersAndStatus.setLayout(new GridLayout(2,1,0,0));
@@ -82,29 +82,14 @@ public class ClientView extends JFrame {
 
         prices = new SectionWithList<>("PRICES");
         prices.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 2, ClientView.HEADING_BACKGROUND_COLOR));
-        prices.addElementToList(new PriceItem("BTC",20000.0F,true));
-        prices.addElementToList(new PriceItem("ETH",400.0F,false));
-        prices.addElementToList(new PriceItem("TESLA",320.0F,true));
 
 
         JPanel saleAndGraph = new JPanel();
         saleAndGraph.setBorder(BorderFactory.createMatteBorder(0, 2, 0, 0, ClientView.HEADING_BACKGROUND_COLOR));
         saleAndGraph.setLayout(new GridLayout(2,1,0,0));
 
-        ArrayList<Double> pricesForGraph = new ArrayList<>();
-        pricesForGraph.add(123.0);
-        pricesForGraph.add(13.0);
-        pricesForGraph.add(193.0);
-        pricesForGraph.add(200.0);
-        pricesForGraph.add(9.0);
-        pricesForGraph.add(300.0);
-        pricesForGraph.add(145.0);
-        GraphSection graph = new GraphSection("GRAPH",pricesForGraph);
-        graph.addPriceToGraph(500.0);
-
-
         sale = new SalePanel("BUY & SELL");
-        sale.setSelectionStocks("BTC","ETH","TESLA");
+        graph = new GraphSection("GRAPH");
 
         saleAndGraph.add(graph);
         saleAndGraph.add(sale);
@@ -113,4 +98,20 @@ public class ClientView extends JFrame {
         marketPanel.add(saleAndGraph);
         tabs.add("  MARKET  ",marketPanel);
     }
+
+    public void addStockToWallet(String name, int quantity, double value){
+        wallet.addElementToList(new WalletItem(name,quantity,value));
+    }
+
+    public void addStockPrice(String name, double price, boolean isRising){
+        prices.addElementToList(new PriceItem(name,price,isRising));
+        Object[] stocks = prices.getListOfElements().stream().map(PriceItem::getName).toArray();
+        String[] stocksCopy = Arrays.copyOf(stocks, stocks.length, String[].class);
+        sale.setSelectionStocks(stocksCopy);
+    }
+
+    public void setGraphPrices(ArrayList<Double> prices){
+        graph.setGraph(prices);
+    }
+
 }

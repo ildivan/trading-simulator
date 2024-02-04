@@ -10,14 +10,14 @@ public class WalletItem extends ListItem {
     private JLabel quantityLabel;
     private JLabel valueLabel;
 
-    public WalletItem(String name, int quantity, float value){
+    public WalletItem(String name, int quantity, double value){
         super();
         removeMouseListener(this);
         setLayout(new BorderLayout(0,0));
         setupLabels(name, quantity, value);
     }
 
-    private void setupLabels(String name, int quantity, float value){
+    private void setupLabels(String name, int quantity, double value){
 
         nameLabel = setupLabel(name);
         nameLabel.setBorder(BorderFactory.createEmptyBorder(0, 30, 0, 0));
@@ -46,7 +46,7 @@ public class WalletItem extends ListItem {
         quantityLabel.setText("Q: " + quantity);
     }
 
-    public void setValue(float value) {
+    public void setValue(double value) {
         valueLabel.setText("$" + value);
     }
 

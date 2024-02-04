@@ -5,6 +5,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicArrowButton;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.util.ArrayList;
 
 public class SectionWithList<T extends ListItem> extends Section{
@@ -55,7 +57,6 @@ public class SectionWithList<T extends ListItem> extends Section{
     }
 
     public void addElementToList(T element){
-        element.setPreferredSize(new Dimension(getContent().getWidth(),70));
         element.setMaximumSize(new Dimension(Integer.MAX_VALUE,70));
         getContent().add(element);
         list.add(element);

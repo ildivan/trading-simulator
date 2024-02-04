@@ -15,15 +15,11 @@ public class GraphPanel extends JPanel {
     private int horizontalMargin;
     private int maxNumberOfValues;
 
-    public GraphPanel(ArrayList<Double> values, int verticalMargin, int maxNumberOfValues) {
+    public GraphPanel(ArrayList<Double> values, int verticalMargin) {
         this.values = values;
-        while(this.values.size() > maxNumberOfValues){
-            this.values.remove(0);
-        }
         this.verticalMargin = verticalMargin;
         this.max = Collections.max(this.values);
         this.min = Collections.min(this.values);
-        this.maxNumberOfValues = maxNumberOfValues;
     }
 
     private void setYValues() {
@@ -49,16 +45,6 @@ public class GraphPanel extends JPanel {
                     xValues.get(i) + increment
             );
         }
-    }
-
-    public void addNewValue(double newValue){
-        if(values.size() >= maxNumberOfValues){
-            values.remove(0);
-        }
-        values.add(newValue);
-        this.max = Collections.max(this.values);
-        this.min = Collections.min(this.values);
-        repaint();
     }
 
     @Override

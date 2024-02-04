@@ -11,12 +11,12 @@ public class PriceItem extends ListItem {
     private JLabel isRisingLabel;
     private static final Font ARROW_FONT = new Font("Times New Roman",Font.BOLD, 25);
 
-    public PriceItem(String name, float price, boolean isRising) {
+    public PriceItem(String name, double price, boolean isRising) {
         setLayout(new BorderLayout(0,0));
         setupLabels(name, price, isRising);
     }
 
-    private void setupLabels(String name, float price, boolean isRising) {
+    private void setupLabels(String name, double price, boolean isRising) {
 
         nameLabel = setupLabel(name);
         nameLabel.setBorder(BorderFactory.createEmptyBorder(0, 30, 0, 0));
@@ -52,7 +52,10 @@ public class PriceItem extends ListItem {
         isRisingLabel.setForeground(Color.RED);
     }
 
-    public void setPrice(float price){
+    public void setPrice(double price){
         priceLabel.setText("$"+price);
+    }
+    public String getName() {
+        return nameLabel.getText();
     }
 }
