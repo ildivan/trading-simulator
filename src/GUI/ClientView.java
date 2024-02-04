@@ -100,6 +100,7 @@ public class ClientView extends JFrame {
         pricesForGraph.add(300.0);
         pricesForGraph.add(145.0);
         GraphSection graph = new GraphSection("GRAPH",pricesForGraph);
+        graph.addPriceToGraph(500.0);
 
 
         sale = new SalePanel("BUY & SELL");

@@ -11,7 +11,6 @@ public class GraphPanel extends JPanel {
     private ArrayList<Integer> xValues;
     private double max;
     private double min;
-    private double start;
     private int verticalMargin;
     private int horizontalMargin;
     private int maxNumberOfValues;
@@ -24,7 +23,6 @@ public class GraphPanel extends JPanel {
         this.verticalMargin = verticalMargin;
         this.max = Collections.max(this.values);
         this.min = Collections.min(this.values);
-        this.start = this.values.get(0);
         this.maxNumberOfValues = maxNumberOfValues;
     }
 
@@ -58,6 +56,8 @@ public class GraphPanel extends JPanel {
             values.remove(0);
         }
         values.add(newValue);
+        this.max = Collections.max(this.values);
+        this.min = Collections.min(this.values);
         repaint();
     }
 
@@ -65,30 +65,37 @@ public class GraphPanel extends JPanel {
     public void paint(Graphics g) {
         super.paint(g);
         Graphics2D g2D = (Graphics2D) g;
-
         g2D.setFont(ClientView.CONTENT_FONT);
-
-        String maxValueString = String.format("%.4f$", max);
-        String minValueString = String.format("%.4f$", min);
-        String lastValueString = String.format("%.4f$",values.get(values.size()-1));
-        // Get the FontMetrics to calculate the width of the string
-        FontMetrics fontMetrics = g2D.getFontMetrics();
-        int stringWidth = fontMetrics.stringWidth(maxValueString);
-
-        horizontalMargin = stringWidth + 10;
-
+        horizontalMargin = calculateHorizontalMargin(g2D);
         setYValues();
         setXValues();
+        drawBackGround(g2D);
+        drawGraph(g2D);
+        drawPriceLines(g2D);
+        drawPrices(g2D);
+    }
 
+    private int calculateHorizontalMargin(Graphics2D g2D){
+        FontMetrics fontMetrics = g2D.getFontMetrics();
+        int stringWidth = fontMetrics.stringWidth(formatToPrintOnScreen(max));
+
+        return stringWidth + 10;
+    }
+
+    private void drawBackGround(Graphics2D g2D) {
         g2D.setPaint(ClientView.CONTENT_BACKGROUND_COLOR);
         g2D.fillRect(0,0,getWidth(),getHeight());
+    }
 
+    private void drawGraph(Graphics2D g2D) {
         g2D.setPaint((values.get(0) <= values.get(values.size()-1) ? Color.GREEN : Color.RED));
         g2D.setStroke(new BasicStroke(2));
         for (int i = 0; i < xValues.size()-1; i++) {
             g2D.drawLine(xValues.get(i),(int)Math.floor(yValues.get(i)),xValues.get(i+1),(int)Math.floor(yValues.get(i+1)));
         }
+    }
 
+    private void drawPriceLines(Graphics2D g2D){
         g2D.setStroke(new BasicStroke(1));
         g2D.setPaint(Color.WHITE);
         g2D.drawLine(horizontalMargin, verticalMargin,getWidth()- horizontalMargin, verticalMargin);
@@ -97,12 +104,25 @@ public class GraphPanel extends JPanel {
             g2D.drawLine(horizontalMargin,(int)Math.floor(yValues.get(yValues.size()-1)),
                     getWidth()- horizontalMargin,(int)Math.floor(yValues.get(yValues.size()-1)));
         }
+    }
 
+    private void drawPrices(Graphics2D g2D){
+        double lastPrice = values.get(values.size()-1);
+        int lastPriceConverted = (int)(Math.floor(yValues.get(yValues.size()-1)));
+
+        String maxValueString = formatToPrintOnScreen(max);
+        String minValueString = formatToPrintOnScreen(min);
+        String lastValueString = formatToPrintOnScreen(lastPrice);
 
         g2D.drawString(maxValueString,5,verticalMargin + ClientView.CONTENT_FONT.getSize()/2);
         g2D.drawString(minValueString,5,getHeight() - verticalMargin + ClientView.CONTENT_FONT.getSize()/2);
-        if(values.get(values.size()-1) != min && values.get(values.size()-1) != max){
-            g2D.drawString(lastValueString,5,(int)(Math.floor(yValues.get(yValues.size()-1) )+ ClientView.CONTENT_FONT.getSize()/2));
+
+        if(lastPrice != min && lastPrice != max){
+            g2D.drawString(lastValueString,5,lastPriceConverted + ClientView.CONTENT_FONT.getSize()/2);
         }
+    }
+
+    private static String formatToPrintOnScreen(double toFormat) {
+        return String.format("%.2f$", toFormat);
     }
 }
