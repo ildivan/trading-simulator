@@ -11,8 +11,7 @@ public class GraphSection extends Section{
     }
 
     public GraphSection(String title) {
-        super(title);
-        setGraph(new ArrayList<>());
+        this(title,new ArrayList<>());
     }
 
     public void setGraph(ArrayList<Double> prices){
@@ -20,7 +19,7 @@ public class GraphSection extends Section{
             return;
         }
         remove(content);
-        content = new GraphPanel(prices, 20);
+        content = new GraphPanel(prices, 20,20);
         add(content, BorderLayout.CENTER);
     }
 }
