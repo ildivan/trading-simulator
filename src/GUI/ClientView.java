@@ -4,7 +4,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 
 public class ClientView extends JFrame {
     public static final Color HEADING_BACKGROUND_COLOR = new Color(0x555557);
@@ -99,8 +98,48 @@ public class ClientView extends JFrame {
         tabs.add("  MARKET  ",marketPanel);
     }
 
+
+    public void setStocksInWallet(ArrayList<String> nameList, ArrayList<Integer> quantityList, ArrayList<Double> valueList){
+        if(nameList.size() != quantityList.size() || nameList.size() != valueList.size()){
+            return;
+        }
+        wallet.removeAllElements();
+        addStocksToWallet(nameList,quantityList,valueList);
+    }
+
+    public void addStocksToWallet(ArrayList<String> nameList, ArrayList<Integer> quantityList, ArrayList<Double> valueList){
+        if(nameList.size() != quantityList.size() || nameList.size() != valueList.size()){
+            return;
+        }
+
+        for (int i = 0; i < nameList.size(); i++) {
+            addStockToWallet(nameList.get(i),quantityList.get(i),valueList.get(i));
+        }
+    }
+
     public void addStockToWallet(String name, int quantity, double value){
         wallet.addElementToList(new WalletItem(name,quantity,value));
+    }
+
+    public void setStockPrices(ArrayList<String> nameList, ArrayList<Double> priceList, ArrayList<Boolean> risingStatus){
+        if(nameList.size() != priceList.size() || nameList.size() != risingStatus.size()){
+            return;
+        }
+        prices.removeAllElements();
+        addStockPrices(nameList,priceList,risingStatus);
+    }
+
+    public void addStockPrices(ArrayList<String> nameList, ArrayList<Double> priceList, ArrayList<Boolean> risingStatus){
+        if(nameList.size() != priceList.size() || nameList.size() != risingStatus.size()){
+            return;
+        }
+
+        String[] stockNamesCopy = Arrays.copyOf(nameList.toArray(), nameList.size(), String[].class);
+        sale.setSelectionStocks(stockNamesCopy);
+
+        for (int i = 0; i < nameList.size(); i++) {
+            addStockPrice(nameList.get(i),priceList.get(i),risingStatus.get(i));
+        }
     }
 
     public void addStockPrice(String name, double price, boolean isRising){
