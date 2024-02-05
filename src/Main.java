@@ -1,4 +1,4 @@
-import GUI.ClientView;
+import gui.ClientView;
 
 import java.util.ArrayList;
 

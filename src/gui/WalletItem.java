@@ -1,9 +1,7 @@
-package GUI;
+package gui;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 public class WalletItem extends ListItem {
     private JLabel nameLabel;
