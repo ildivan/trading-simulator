@@ -12,12 +12,13 @@ public class GraphPanel extends JPanel {
     private double max;
     private double min;
     private int verticalMargin;
-    private int horizontalMargin;
-    private int maxNumberOfValues;
+    private int leftHorizontalMargin;
+    private int rightHorizontalMargin;
 
-    public GraphPanel(ArrayList<Double> values, int verticalMargin) {
+    public GraphPanel(ArrayList<Double> values, int verticalMargin,int rightHorizontalMargin) {
         this.values = values;
         this.verticalMargin = verticalMargin;
+        this.rightHorizontalMargin = rightHorizontalMargin;
         this.max = Collections.max(this.values);
         this.min = Collections.min(this.values);
     }
@@ -36,9 +37,9 @@ public class GraphPanel extends JPanel {
     }
 
     private void setXValues(){
-        int width = getWidth() - 2* horizontalMargin;
+        int width = getWidth() - leftHorizontalMargin - rightHorizontalMargin;
         xValues = new ArrayList<>();
-        xValues.add(horizontalMargin);
+        xValues.add(leftHorizontalMargin);
         int increment = (int)Math.floor(((double)1/(double)(yValues.size()-1))*width);
         for (int i = 0; i < yValues.size()-1; i++) {
             xValues.add(
@@ -52,7 +53,7 @@ public class GraphPanel extends JPanel {
         super.paint(g);
         Graphics2D g2D = (Graphics2D) g;
         g2D.setFont(ClientView.CONTENT_FONT);
-        horizontalMargin = calculateHorizontalMargin(g2D);
+        leftHorizontalMargin = calculateLeftHorizontalMargin(g2D);
         setYValues();
         setXValues();
         drawBackGround(g2D);
@@ -61,7 +62,7 @@ public class GraphPanel extends JPanel {
         drawPrices(g2D);
     }
 
-    private int calculateHorizontalMargin(Graphics2D g2D){
+    private int calculateLeftHorizontalMargin(Graphics2D g2D){
         FontMetrics fontMetrics = g2D.getFontMetrics();
         int stringWidth = fontMetrics.stringWidth(formatToPrintOnScreen(max));
 
@@ -84,11 +85,11 @@ public class GraphPanel extends JPanel {
     private void drawPriceLines(Graphics2D g2D){
         g2D.setStroke(new BasicStroke(1));
         g2D.setPaint(Color.WHITE);
-        g2D.drawLine(horizontalMargin, verticalMargin,getWidth()- horizontalMargin, verticalMargin);
-        g2D.drawLine(horizontalMargin,getHeight()- verticalMargin,getWidth()- horizontalMargin,getHeight()- verticalMargin);
+        g2D.drawLine(leftHorizontalMargin, verticalMargin,getWidth()- rightHorizontalMargin, verticalMargin);
+        g2D.drawLine(leftHorizontalMargin,getHeight()- verticalMargin,getWidth()- rightHorizontalMargin,getHeight()- verticalMargin);
         if(yValues.get(yValues.size()-1) != min && yValues.get(yValues.size()-1) != max){
-            g2D.drawLine(horizontalMargin,(int)Math.floor(yValues.get(yValues.size()-1)),
-                    getWidth()- horizontalMargin,(int)Math.floor(yValues.get(yValues.size()-1)));
+            g2D.drawLine(leftHorizontalMargin,(int)Math.floor(yValues.get(yValues.size()-1)),
+                    getWidth()- rightHorizontalMargin,(int)Math.floor(yValues.get(yValues.size()-1)));
         }
     }
 
