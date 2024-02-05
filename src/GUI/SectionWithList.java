@@ -58,6 +58,7 @@ public class SectionWithList<T extends ListItem> extends Section{
 
     public void addElementToList(T element){
         element.setMaximumSize(new Dimension(Integer.MAX_VALUE,70));
+        element.setPreferredSize(new Dimension(0,70));
         getContent().add(element);
         list.add(element);
     }
@@ -65,6 +66,14 @@ public class SectionWithList<T extends ListItem> extends Section{
     public void removeElementFromList(T element){
         getContent().remove(element);
         list.remove(element);
+    }
+
+    public void removeAllElements(){
+        for(T element : getListOfElements())
+        {
+            getContent().remove(element);
+        }
+        getListOfElements().clear();
     }
 
     public ArrayList<T> getListOfElements() {
