@@ -1,5 +1,7 @@
 package trading;
 
+import exceptions.NegativeQuantityException;
+
 public class Order {
     private int orderId;
     private OrderSide side;
@@ -36,6 +38,12 @@ public class Order {
 
     public int getQuantity() {
         return quantity;
+    }
+    public void decreaseQuantity(int quantityToDecrease){
+        if(quantityToDecrease > quantity){
+            throw new NegativeQuantityException(quantity,quantityToDecrease);
+        }
+        quantity -= quantityToDecrease;
     }
 
     public int getPrice() {

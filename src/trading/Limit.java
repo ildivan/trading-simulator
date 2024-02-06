@@ -4,7 +4,6 @@ import exceptions.EmptyLimitException;
 import exceptions.WrongLimitException;
 
 import java.util.ArrayDeque;
-import java.util.Queue;
 
 public class Limit {
     private ArrayDeque<Order> orders;
@@ -33,4 +32,10 @@ public class Limit {
         return orders.peek();
     }
 
+    public void deleteFirstOrder() throws EmptyLimitException{
+        if(orders.isEmpty()){
+            throw new EmptyLimitException(priceLevel);
+        }
+        orders.remove();
+    }
 }
