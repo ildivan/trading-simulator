@@ -38,4 +38,8 @@ public class Limit {
         }
         orders.remove();
     }
+
+    public boolean isEmpty() {
+        return orders.isEmpty();
+    }
 }

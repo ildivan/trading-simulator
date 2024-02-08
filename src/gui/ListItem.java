@@ -5,7 +5,7 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-public class ListItem extends JPanel implements MouseListener {
+public abstract class ListItem extends JPanel implements MouseListener {
     public ListItem(){
         addMouseListener(this);
         setBackground(ClientView.CONTENT_BACKGROUND_COLOR);

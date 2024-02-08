@@ -9,8 +9,8 @@ public class TradingEngine {
     private TreeMap<Integer,Limit> asks;
 
     public TradingEngine(){
-        bids = new TreeMap<>((a , b) -> -Integer.compare(a,b));
-        asks = new TreeMap<>(Integer::compare);
+        bids = new TreeMap<>((a , b) -> -Integer.compare(a,b)); //bid with the highest price is first
+        asks = new TreeMap<>(Integer::compare); //ask with the lowest price is first
     }
 
     public void insertOrder(Order order){
@@ -30,8 +30,45 @@ public class TradingEngine {
         match();
     }
 
-    private void match(){
+    private void match() {
+        if(asks.isEmpty() || bids.isEmpty()){
+            return;
+        }
 
+        Limit bestBuyLimit = bids.firstEntry().getValue();
+        Limit bestSellLimit = asks.firstEntry().getValue();
+        try {
+            Order buyOrder = bestBuyLimit.getNextOrder();
+            while (true) {
+                Order sellOrder = bestSellLimit.getNextOrder();
+                if(buyOrder.getPrice() < sellOrder.getPrice()){
+                    return;
+                }else if (sellOrder.getQuantity() > buyOrder.getQuantity()) {
+                    sellOrder.decreaseQuantity(buyOrder.getQuantity());
+                    sendTrade();
+                    bestBuyLimit.deleteFirstOrder();
+                    break;
+                } else if (sellOrder.getQuantity() == buyOrder.getQuantity()) {
+                    sendTrade();
+                    bestSellLimit.deleteFirstOrder();
+                    bestBuyLimit.deleteFirstOrder();
+                    break;
+                } else {
+                    buyOrder.decreaseQuantity(sellOrder.getQuantity());
+                    sendTrade();
+                    bestSellLimit.deleteFirstOrder();
+                }
+            }
+        } catch (EmptyLimitException e) {
+            if(bestBuyLimit.isEmpty()){
+                bids.remove(bestBuyLimit.getPriceLevel());
+            }
+            if(bestSellLimit.isEmpty()){
+                asks.remove(bestSellLimit.getPriceLevel());
+            }
+        }finally{
+            match();
+        }
     }
 
     private void matchMarketOrder(Order order,TreeMap<Integer,Limit> otherSideMap){
@@ -41,9 +78,8 @@ public class TradingEngine {
 
         Limit bestPriceLimit = otherSideMap.firstEntry().getValue();
         try {
-            Order currentOrder;
             while (true) {
-                currentOrder = bestPriceLimit.getNextOrder();
+                Order currentOrder = bestPriceLimit.getNextOrder();
                 if (currentOrder.getQuantity() > order.getQuantity()) {
                     currentOrder.decreaseQuantity(order.getQuantity());
                     sendTrade();
