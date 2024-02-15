@@ -1,7 +1,7 @@
 package trading;
 
 public enum Stock {
-    TESLA,
-    GOOGLE,
-    MICROSOFT,
+    TEXLA,
+    GOOGOL,
+    MACROSOFT,
 }

@@ -25,14 +25,14 @@ public class Limit {
         orders.add(toInsert);
     }
 
-    public Order getNextOrder() throws EmptyLimitException{
+    public Order getCurrentOrder() throws EmptyLimitException{
         if(orders.isEmpty()){
             throw new EmptyLimitException(priceLevel);
         }
         return orders.peek();
     }
 
-    public void deleteFirstOrder() throws EmptyLimitException{
+    public void deleteCurrentOrder() throws EmptyLimitException{
         if(orders.isEmpty()){
             throw new EmptyLimitException(priceLevel);
         }

@@ -14,89 +14,49 @@ public class TradingEngine {
     }
 
     public void insertOrder(Order order){
-        if(order.getType() == OrderType.MARKET){
-            if(order.getSide() == OrderSide.BID){
-                matchMarketOrder(order,asks);
-            }else{ // order.getSide() == OrderSide.ASK
-                matchMarketOrder(order,bids);
-            }
-        }
         if(order.getSide() == OrderSide.BID){
             putOrderInMap(order,bids);
         }else{ // order.getSide() == OrderSide.ASK
             putOrderInMap(order,asks);
         }
-
-        match();
     }
 
-    private void match() {
-        if(asks.isEmpty() || bids.isEmpty()){
-            return;
-        }
-
-        Limit bestBuyLimit = bids.firstEntry().getValue();
-        Limit bestSellLimit = asks.firstEntry().getValue();
-        try {
-            Order buyOrder = bestBuyLimit.getNextOrder();
-            while (true) {
-                Order sellOrder = bestSellLimit.getNextOrder();
-                if(buyOrder.getPrice() < sellOrder.getPrice()){
+    public void match() {
+        while(!asks.isEmpty() && !bids.isEmpty()){
+            Limit bestBuyLimit = bids.firstEntry().getValue();
+            Limit bestSellLimit = asks.firstEntry().getValue();
+            try {
+                if(bestBuyLimit.getPriceLevel() < bestSellLimit.getPriceLevel()){
                     return;
-                }else if (sellOrder.getQuantity() > buyOrder.getQuantity()) {
-                    sellOrder.decreaseQuantity(buyOrder.getQuantity());
-                    sendTrade();
-                    bestBuyLimit.deleteFirstOrder();
-                    break;
-                } else if (sellOrder.getQuantity() == buyOrder.getQuantity()) {
-                    sendTrade();
-                    bestSellLimit.deleteFirstOrder();
-                    bestBuyLimit.deleteFirstOrder();
-                    break;
-                } else {
-                    buyOrder.decreaseQuantity(sellOrder.getQuantity());
-                    sendTrade();
-                    bestSellLimit.deleteFirstOrder();
+                }
+                matchOrder(bestBuyLimit,bestSellLimit);
+            } catch (EmptyLimitException e) {
+                if(bestBuyLimit.isEmpty()){
+                    bids.remove(bestBuyLimit.getPriceLevel());
+                }
+                if(bestSellLimit.isEmpty()){
+                    asks.remove(bestSellLimit.getPriceLevel());
                 }
             }
-        } catch (EmptyLimitException e) {
-            if(bestBuyLimit.isEmpty()){
-                bids.remove(bestBuyLimit.getPriceLevel());
-            }
-            if(bestSellLimit.isEmpty()){
-                asks.remove(bestSellLimit.getPriceLevel());
-            }
-        }finally{
-            match();
         }
     }
 
-    private void matchMarketOrder(Order order,TreeMap<Integer,Limit> otherSideMap){
-        if(otherSideMap.isEmpty()){
-            return;
-        }
+    private void matchOrder(Limit bestBuyLimit, Limit bestSellLimit) throws EmptyLimitException {
+        Order buyOrder = bestBuyLimit.getCurrentOrder();
+        Order sellOrder = bestSellLimit.getCurrentOrder();
 
-        Limit bestPriceLimit = otherSideMap.firstEntry().getValue();
-        try {
-            while (true) {
-                Order currentOrder = bestPriceLimit.getNextOrder();
-                if (currentOrder.getQuantity() > order.getQuantity()) {
-                    currentOrder.decreaseQuantity(order.getQuantity());
-                    sendTrade();
-                    break;
-                } else if (currentOrder.getQuantity() == order.getQuantity()) {
-                    sendTrade();
-                    bestPriceLimit.deleteFirstOrder();
-                    break;
-                } else {
-                    order.decreaseQuantity(currentOrder.getQuantity());
-                    sendTrade();
-                    bestPriceLimit.deleteFirstOrder();
-                }
-            }
-        } catch (EmptyLimitException e) {
-            otherSideMap.remove(otherSideMap.firstKey());
-            matchMarketOrder(order,otherSideMap);
+        if (sellOrder.getQuantity() > buyOrder.getQuantity()) {
+            sellOrder.decreaseQuantity(buyOrder.getQuantity());
+            sendTrade();
+            bestBuyLimit.deleteCurrentOrder();
+        } else if (sellOrder.getQuantity() == buyOrder.getQuantity()) {
+            sendTrade();
+            bestSellLimit.deleteCurrentOrder();
+            bestBuyLimit.deleteCurrentOrder();
+        } else {
+            buyOrder.decreaseQuantity(sellOrder.getQuantity());
+            sendTrade();
+            bestSellLimit.deleteCurrentOrder();
         }
     }
 
