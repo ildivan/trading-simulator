@@ -12,6 +12,8 @@ public class ClientView extends JFrame {
     public static final Font HEADING_FONT = new Font("Times New Roman",Font.PLAIN,24);
     public static final Font CONTENT_FONT = new Font("Times New Roman",Font.PLAIN,16);
     public static final Color SELECTED_COLOR = new Color(0x464444);
+    public static final int minimumHeight = 640;
+    public static final int minimumWidth = 1040;
     private CustomTabbedPane tabs;
     private SectionWithList<WalletItem> wallet;
     private SectionWithList<OrderItem> orders;
@@ -35,7 +37,8 @@ public class ClientView extends JFrame {
 
     public ClientView(){
         super("Client View");
-        setSize(new Dimension(1000,1000));
+        setSize(new Dimension(minimumWidth + 100,minimumHeight + 100));
+        setMinimumSize(new Dimension(minimumWidth,minimumHeight));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setupTabs();
         setProfileTab();
@@ -152,5 +155,4 @@ public class ClientView extends JFrame {
     public void setGraphPrices(ArrayList<Double> prices){
         graph.setGraph(prices);
     }
-
 }

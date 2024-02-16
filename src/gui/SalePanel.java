@@ -15,7 +15,6 @@ public class SalePanel extends Section implements ActionListener {
     private JRadioButton buyButton;
     private JRadioButton sellButton;
     private JComboBox<String> stockSelection;
-    private JPanel selectStockPanel;
     private JTextField quantityField;
     private JButton purchaseButton;
     private static final Font INPUT_FONT = new Font("TImes New Roman",Font.BOLD,16);
@@ -49,7 +48,7 @@ public class SalePanel extends Section implements ActionListener {
         content.setLayout(new GridLayout(4,1,0,0));
         setupBuyOrSellChoicePanel();
         setupSelectStockPanel();
-        setupInsertQuantityPanel();
+        setupQuantityAndPricePanel();
         setupPurchaseButton();
     }
 
@@ -99,7 +98,7 @@ public class SalePanel extends Section implements ActionListener {
     }
 
     private void setupSelectStockPanel() {
-        selectStockPanel = new JPanel();
+        JPanel selectStockPanel = new JPanel();
         selectStockPanel.setLayout(new BoxLayout(selectStockPanel,BoxLayout.X_AXIS));
         selectStockPanel.add(Box.createGlue());
 
@@ -125,22 +124,14 @@ public class SalePanel extends Section implements ActionListener {
         content.add(selectStockPanel);
     }
 
-    public void setSelectionStocks(String... stocks){
-        stockSelection.removeAllItems();
-        for(int i = 0; i < stocks.length; i++){
-            stockSelection.insertItemAt(stocks[i],i);
-        }
-        stockSelection.setSelectedIndex(0);
-    }
 
-
-    private void setupInsertQuantityPanel() {
-        JPanel quantityPanel = new JPanel();
-        quantityPanel.setLayout(new BoxLayout(quantityPanel,BoxLayout.X_AXIS));
-        quantityPanel.add(Box.createGlue());
+    private void setupQuantityAndPricePanel() {
+        JPanel quantityAndPricePanel = new JPanel();
+        quantityAndPricePanel.setLayout(new BoxLayout(quantityAndPricePanel,BoxLayout.X_AXIS));
+        quantityAndPricePanel.add(Box.createGlue());
 
         JLabel selectQuantityLabel = new JLabel();
-        selectQuantityLabel.setText("Select quantity: ");
+        selectQuantityLabel.setText("Insert quantity: ");
         selectQuantityLabel.setFont(ClientView.CONTENT_FONT);
         selectQuantityLabel.setForeground(ClientView.FONT_COLOR);
         selectQuantityLabel.setBorder(new EmptyBorder(0,0,0,30));
@@ -156,11 +147,31 @@ public class SalePanel extends Section implements ActionListener {
 
         ((AbstractDocument) quantityField.getDocument()).setDocumentFilter(new NumericFilter());
 
-        quantityPanel.add(selectQuantityLabel);
-        quantityPanel.add(quantityField);
-        quantityPanel.add(Box.createGlue());
-        quantityPanel.setBackground(ClientView.CONTENT_BACKGROUND_COLOR);
-        content.add(quantityPanel);
+        quantityAndPricePanel.add(selectQuantityLabel);
+        quantityAndPricePanel.add(quantityField);
+
+        JLabel selectPriceLabel = new JLabel();
+        selectPriceLabel.setText("Insert price: ");
+        selectPriceLabel.setFont(ClientView.CONTENT_FONT);
+        selectPriceLabel.setForeground(ClientView.FONT_COLOR);
+        selectPriceLabel.setBorder(new EmptyBorder(0,30,0,30));
+
+        JTextField priceField = new JTextField();
+        priceField.setPreferredSize(new Dimension(100, 40));
+        priceField.setMaximumSize(new Dimension(100, 40));
+        priceField.setHorizontalAlignment(JTextField.RIGHT);
+        priceField.setBackground(ClientView.HEADING_BACKGROUND_COLOR);
+        priceField.setFont(INPUT_FONT);
+        priceField.setForeground(ClientView.FONT_COLOR);
+        priceField.setCaretColor(ClientView.FONT_COLOR);
+
+        ((AbstractDocument) priceField.getDocument()).setDocumentFilter(new NumericFilter());
+        quantityAndPricePanel.add(selectPriceLabel);
+        quantityAndPricePanel.add(priceField);
+
+        quantityAndPricePanel.add(Box.createGlue());
+        quantityAndPricePanel.setBackground(ClientView.CONTENT_BACKGROUND_COLOR);
+        content.add(quantityAndPricePanel);
     }
 
     private static class NumericFilter extends DocumentFilter {
@@ -220,6 +231,13 @@ public class SalePanel extends Section implements ActionListener {
 
     public String getSelectedStock(){
         return (String) stockSelection.getSelectedItem();
+    }
+    public void setSelectionStocks(String... stocks){
+        stockSelection.removeAllItems();
+        for(int i = 0; i < stocks.length; i++){
+            stockSelection.insertItemAt(stocks[i],i);
+        }
+        stockSelection.setSelectedIndex(0);
     }
 
     public int getStockQuantity(){
