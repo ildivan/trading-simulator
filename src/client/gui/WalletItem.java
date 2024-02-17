@@ -1,4 +1,6 @@
-package gui;
+package client.gui;
+
+import client.ClientController;
 
 import javax.swing.*;
 import java.awt.*;
@@ -8,8 +10,8 @@ public class WalletItem extends ListItem {
     private JLabel quantityLabel;
     private JLabel valueLabel;
 
-    public WalletItem(String name, int quantity, double value){
-        super();
+    public WalletItem(ClientController controller, String name, int quantity, double value){
+        super(controller);
         removeMouseListener(this);
         setLayout(new BorderLayout(0,0));
         setupLabels(name, quantity, value);

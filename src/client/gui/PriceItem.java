@@ -1,4 +1,6 @@
-package gui;
+package client.gui;
+
+import client.ClientController;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,7 +11,8 @@ public class PriceItem extends ListItem {
     private JLabel isRisingLabel;
     private static final Font ARROW_FONT = new Font("Times New Roman",Font.BOLD, 25);
 
-    public PriceItem(String name, double price, boolean isRising) {
+    public PriceItem(ClientController controller, String name, double price, boolean isRising) {
+        super(controller);
         setLayout(new BorderLayout(0,0));
         setupLabels(name, price, isRising);
     }

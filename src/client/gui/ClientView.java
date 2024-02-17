@@ -1,4 +1,6 @@
-package gui;
+package client.gui;
+
+import client.ClientController;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,6 +16,7 @@ public class ClientView extends JFrame {
     public static final Color SELECTED_COLOR = new Color(0x464444);
     public static final int minimumHeight = 640;
     public static final int minimumWidth = 1040;
+    private ClientController controller;
     private CustomTabbedPane tabs;
     private SectionWithList<WalletItem> wallet;
     private SectionWithList<OrderItem> orders;
@@ -35,8 +38,9 @@ public class ClientView extends JFrame {
         }
     }
 
-    public ClientView(){
-        super("Client View");
+    public ClientView(ClientController controller){
+        super("Trading App");
+        this.controller = controller;
         setSize(new Dimension(minimumWidth + 100,minimumHeight + 100));
         setMinimumSize(new Dimension(minimumWidth,minimumHeight));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -68,6 +72,7 @@ public class ClientView extends JFrame {
         JPanel ordersAndStatus = new JPanel();
         ordersAndStatus.setLayout(new GridLayout(2,1,0,0));
         orders = new SectionWithList<>("ORDERS");
+        orders.addElementToList(new OrderItem(controller,"BUY","BTC",2,340));
         Section orderStatus = new Section("ORDER INFORMATION");
         ordersAndStatus.setBorder(BorderFactory.createMatteBorder(0, 2, 0, 0, ClientView.HEADING_BACKGROUND_COLOR));
         ordersAndStatus.add(orders);
@@ -121,7 +126,7 @@ public class ClientView extends JFrame {
     }
 
     public void addStockToWallet(String name, int quantity, double value){
-        wallet.addElementToList(new WalletItem(name,quantity,value));
+        wallet.addElementToList(new WalletItem(controller,name,quantity,value));
     }
 
     public void setStockPrices(ArrayList<String> nameList, ArrayList<Double> priceList, ArrayList<Boolean> risingStatus){
@@ -146,7 +151,7 @@ public class ClientView extends JFrame {
     }
 
     public void addStockPrice(String name, double price, boolean isRising){
-        prices.addElementToList(new PriceItem(name,price,isRising));
+        prices.addElementToList(new PriceItem(controller,name,price,isRising));
         Object[] stocks = prices.getListOfElements().stream().map(PriceItem::getName).toArray();
         String[] stocksCopy = Arrays.copyOf(stocks, stocks.length, String[].class);
         sale.setSelectionStocks(stocksCopy);
