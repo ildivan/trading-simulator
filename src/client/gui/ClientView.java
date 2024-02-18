@@ -20,6 +20,7 @@ public class ClientView extends JFrame {
     private CustomTabbedPane tabs;
     private SectionWithList<WalletItem> wallet;
     private SectionWithList<OrderItem> orders;
+    private OrderStatusPanel orderStatus;
     private SectionWithList<PriceItem> prices;
     private GraphSection graph;
     private SalePanel sale;
@@ -73,7 +74,9 @@ public class ClientView extends JFrame {
         ordersAndStatus.setLayout(new GridLayout(2,1,0,0));
         orders = new SectionWithList<>("ORDERS");
         orders.addElementToList(new OrderItem(controller,"BUY","BTC",2,340));
-        Section orderStatus = new Section("ORDER INFORMATION");
+        orderStatus = new OrderStatusPanel();
+        orderStatus.setOrder(1234,"18/2/2024 10:35","BUY","BTC",4,19000,"PENDING");
+
         ordersAndStatus.setBorder(BorderFactory.createMatteBorder(0, 2, 0, 0, ClientView.HEADING_BACKGROUND_COLOR));
         ordersAndStatus.add(orders);
         ordersAndStatus.add(orderStatus);

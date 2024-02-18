@@ -14,10 +14,8 @@ public class OrderItem extends ListItem {
 
     public OrderItem(ClientController controller,String orderSide, String stockName, int quantity, double price){
         super(controller);
-        setLayout(new BoxLayout(this,BoxLayout.X_AXIS));
-        add(Box.createGlue());
+        setLayout(new GridLayout(1,4));
         setupLabels(orderSide,stockName,quantity,price);
-        add(Box.createGlue());
     }
 
     private void setupLabels(String orderSide, String name, int quantity, double price) {
