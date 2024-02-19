@@ -1,7 +1,5 @@
 package client.gui;
 
-import client.ClientController;
-
 import javax.swing.*;
 import java.awt.*;
 
@@ -11,9 +9,10 @@ public class PriceItem extends JPanel {
     private JLabel isRisingLabel;
     private static final Font ARROW_FONT = new Font("Times New Roman",Font.BOLD, 25);
 
-    public PriceItem(ClientController controller, String name, double price, boolean isRising) {
-        super(controller);
+    public PriceItem(String name, double price, boolean isRising) {
+        super();
         setLayout(new BorderLayout(0,0));
+        setBackground(ClientView.CONTENT_BACKGROUND_COLOR);
         setupLabels(name, price, isRising);
     }
 

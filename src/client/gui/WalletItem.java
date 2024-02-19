@@ -1,7 +1,5 @@
 package client.gui;
 
-import client.ClientController;
-
 import javax.swing.*;
 import java.awt.*;
 
@@ -10,9 +8,10 @@ public class WalletItem extends JPanel {
     private JLabel quantityLabel;
     private JLabel valueLabel;
 
-    public WalletItem(ClientController controller, String name, int quantity, double value){
+    public WalletItem(String name, int quantity, double value){
         super();
         setLayout(new BorderLayout(0,0));
+        setBackground(ClientView.CONTENT_BACKGROUND_COLOR);
         setupLabels(name, quantity, value);
     }
 

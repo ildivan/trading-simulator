@@ -77,7 +77,7 @@ public class ClientView extends JFrame implements ActionListener, MouseListener 
         JPanel ordersAndStatus = new JPanel();
         ordersAndStatus.setLayout(new GridLayout(2,1,0,0));
         orders = new SectionWithList<>("ORDERS");
-        orders.addElementToList(new OrderItem(controller,"BUY","BTC",2,340));
+        orders.addElementToList(new OrderItem("BUY","BTC",2,340));
         orderStatus = new OrderStatusPanel();
         orderStatus.setOrder(1234,"18/2/2024 10:35","BUY","BTC",4,19000,"PENDING");
 
@@ -134,7 +134,7 @@ public class ClientView extends JFrame implements ActionListener, MouseListener 
     }
 
     public void addStockToWallet(String name, int quantity, double value){
-        wallet.addElementToList(new WalletItem(controller,name,quantity,value));
+        wallet.addElementToList(new WalletItem(name,quantity,value));
     }
 
     public void setStockPrices(ArrayList<String> nameList, ArrayList<Double> priceList, ArrayList<Boolean> risingStatus){
@@ -159,7 +159,7 @@ public class ClientView extends JFrame implements ActionListener, MouseListener 
     }
 
     public void addStockPrice(String name, double price, boolean isRising){
-        PriceItem newItem = new PriceItem(controller,name,price,isRising);
+        PriceItem newItem = new PriceItem(name,price,isRising);
         newItem.addMouseListener(this);
         prices.addElementToList(newItem);
         Object[] stocks = prices.getListOfElements().stream().map(PriceItem::getName).toArray();

@@ -1,8 +1,6 @@
 package client.gui;
 
 
-import client.ClientController;
-
 import javax.swing.*;
 import java.awt.*;
 
@@ -12,9 +10,10 @@ public class OrderItem extends JPanel {
     private JLabel quantityLabel;
     private JLabel priceLabel;
 
-    public OrderItem(ClientController controller,String orderSide, String stockName, int quantity, double price){
+    public OrderItem(String orderSide, String stockName, int quantity, double price){
         super();
         setLayout(new GridLayout(1,4));
+        setBackground(ClientView.CONTENT_BACKGROUND_COLOR);
         setupLabels(orderSide,stockName,quantity,price);
     }
 
