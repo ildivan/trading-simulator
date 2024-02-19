@@ -21,7 +21,6 @@ public class SalePanel extends Section implements ActionListener {
     private final ChangeListener BUY_CHANGE_LISTENER;
     private final ChangeListener SELL_CHANGE_LISTENER;
 
-    ;
     public SalePanel(String title) {
         super(title);
 
@@ -58,10 +57,6 @@ public class SalePanel extends Section implements ActionListener {
             setPurchaseButtonToBuy();
         }else if(actionEvent.getSource() == sellButton){
             setPurchaseButtonToSell();
-        }else if(actionEvent.getSource() == purchaseButton){
-            System.out.println("Type of order: " + (isSetToBuy() ? "Buy" : "Sell"));
-            System.out.println("Selected stock: " + getSelectedStock());
-            System.out.println("Selected quantity: " + getStockQuantity());
         }
     }
 
@@ -204,12 +199,15 @@ public class SalePanel extends Section implements ActionListener {
         purchaseButton.setFont(ClientView.HEADING_FONT);
         purchaseButton.setFocusable(false);
         purchaseButton.setBorder(new EmptyBorder(0,0,0,0));
-        purchaseButton.addActionListener(this);
         setPurchaseButtonToBuy();
 
         purchaseButtonPanel.add(purchaseButton);
         purchaseButtonPanel.add(Box.createGlue());
         content.add(purchaseButtonPanel);
+    }
+
+    public JButton getPurchaseButton(){
+        return purchaseButton;
     }
 
     private void setPurchaseButtonToBuy(){

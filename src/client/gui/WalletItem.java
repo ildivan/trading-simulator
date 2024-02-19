@@ -5,14 +5,13 @@ import client.ClientController;
 import javax.swing.*;
 import java.awt.*;
 
-public class WalletItem extends ListItem {
+public class WalletItem extends JPanel {
     private JLabel nameLabel;
     private JLabel quantityLabel;
     private JLabel valueLabel;
 
     public WalletItem(ClientController controller, String name, int quantity, double value){
-        super(controller);
-        removeMouseListener(this);
+        super();
         setLayout(new BorderLayout(0,0));
         setupLabels(name, quantity, value);
     }

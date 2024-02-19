@@ -6,14 +6,14 @@ import client.ClientController;
 import javax.swing.*;
 import java.awt.*;
 
-public class OrderItem extends ListItem {
+public class OrderItem extends JPanel {
     private JLabel orderSideLabel;
     private JLabel nameLabel;
     private JLabel quantityLabel;
     private JLabel priceLabel;
 
     public OrderItem(ClientController controller,String orderSide, String stockName, int quantity, double price){
-        super(controller);
+        super();
         setLayout(new GridLayout(1,4));
         setupLabels(orderSide,stockName,quantity,price);
     }

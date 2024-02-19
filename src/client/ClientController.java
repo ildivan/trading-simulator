@@ -1,7 +1,10 @@
 package client;
 
-import client.gui.*;
+import client.gui.ClientView;
+import client.gui.OrderItem;
+import client.gui.PriceItem;
 
+import javax.swing.*;
 import java.util.ArrayList;
 
 public class ClientController{
@@ -21,7 +24,7 @@ public class ClientController{
         return view;
     }
 
-    public void handleItemClick(ListItem clickedItem){
+    public void handleItemClick(JPanel clickedItem){
         if(clickedItem instanceof PriceItem priceItem){
             System.out.println("Price  item clicked");
         }else if(clickedItem instanceof OrderItem orderItem){

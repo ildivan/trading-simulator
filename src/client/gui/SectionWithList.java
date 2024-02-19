@@ -7,7 +7,7 @@ import javax.swing.plaf.basic.BasicScrollBarUI;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class SectionWithList<T extends ListItem> extends Section{
+public class SectionWithList<T extends JPanel> extends Section{
 
     private final ArrayList<T> list;
     private static final int SCROLL_SPEED = 15;

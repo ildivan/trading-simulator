@@ -4,10 +4,14 @@ import client.ClientController;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class ClientView extends JFrame {
+public class ClientView extends JFrame implements ActionListener, MouseListener {
     public static final Color HEADING_BACKGROUND_COLOR = new Color(0x555557);
     public static final Color CONTENT_BACKGROUND_COLOR = Color.DARK_GRAY;
     public static final Color FONT_COLOR = Color.WHITE;
@@ -99,6 +103,7 @@ public class ClientView extends JFrame {
         saleAndGraph.setLayout(new GridLayout(2,1,0,0));
 
         sale = new SalePanel("BUY & SELL");
+        sale.getPurchaseButton().addActionListener(this);
         graph = new GraphSection("GRAPH");
 
         saleAndGraph.add(graph);
@@ -154,7 +159,9 @@ public class ClientView extends JFrame {
     }
 
     public void addStockPrice(String name, double price, boolean isRising){
-        prices.addElementToList(new PriceItem(controller,name,price,isRising));
+        PriceItem newItem = new PriceItem(controller,name,price,isRising);
+        newItem.addMouseListener(this);
+        prices.addElementToList(newItem);
         Object[] stocks = prices.getListOfElements().stream().map(PriceItem::getName).toArray();
         String[] stocksCopy = Arrays.copyOf(stocks, stocks.length, String[].class);
         sale.setSelectionStocks(stocksCopy);
@@ -162,5 +169,48 @@ public class ClientView extends JFrame {
 
     public void setGraphPrices(ArrayList<Double> prices){
         graph.setGraph(prices);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent actionEvent) {
+        JButton purchaseButton = sale.getPurchaseButton();
+        if(actionEvent.getSource() == purchaseButton){
+            System.out.println("Type of order: " + (sale.isSetToBuy() ? "Buy" : "Sell"));
+            System.out.println("Selected stock: " + sale.getSelectedStock());
+            System.out.println("Selected quantity: " + sale.getStockQuantity());
+        }
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent mouseEvent) {
+        if(mouseEvent.getSource() instanceof JPanel clickedItem){
+            clickedItem.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            clickedItem.setBackground(ClientView.SELECTED_COLOR);
+        }
+    }
+
+    @Override
+    public void mouseExited(MouseEvent mouseEvent) {
+        if(mouseEvent.getSource() instanceof JPanel clickedItem){
+            clickedItem.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+            clickedItem.setBackground(ClientView.CONTENT_BACKGROUND_COLOR);
+        }
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent mouseEvent) {
+        if(mouseEvent.getSource() instanceof JPanel clickedItem){
+            controller.handleItemClick(clickedItem);
+        }
+    }
+
+    @Override
+    public void mousePressed(MouseEvent mouseEvent) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent mouseEvent) {
+
     }
 }

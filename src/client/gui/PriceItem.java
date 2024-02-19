@@ -5,7 +5,7 @@ import client.ClientController;
 import javax.swing.*;
 import java.awt.*;
 
-public class PriceItem extends ListItem {
+public class PriceItem extends JPanel {
     private JLabel nameLabel;
     private JLabel priceLabel;
     private JLabel isRisingLabel;
