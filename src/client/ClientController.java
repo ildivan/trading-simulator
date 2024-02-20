@@ -6,11 +6,14 @@ import client.gui.PriceItem;
 import client.gui.SalePanel;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
-public class ClientController implements ActionListener {
+public class ClientController implements ActionListener, MouseListener {
     private ClientModel model;
     private ClientView view;
 
@@ -25,14 +28,6 @@ public class ClientController implements ActionListener {
 
     public ClientView getView() {
         return view;
-    }
-
-    public void handleItemClick(JPanel clickedItem){
-        if(clickedItem instanceof PriceItem priceItem){
-            System.out.println("Price  item clicked");
-        }else if(clickedItem instanceof OrderItem orderItem){
-            System.out.println("order item clicked");
-        }
     }
 
     public void updateWallet(ArrayList<String> stockNames, ArrayList<Integer> quantityList, ArrayList<Double> values){
@@ -51,6 +46,47 @@ public class ClientController implements ActionListener {
             System.out.println("Type of order: " + (sale.isSetToBuy() ? "Buy" : "Sell"));
             System.out.println("Selected stock: " + sale.getSelectedStock());
             System.out.println("Selected quantity: " + sale.getStockQuantity());
+        }
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent mouseEvent) {
+        if(mouseEvent.getSource() instanceof JPanel clickedItem){
+            clickedItem.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            clickedItem.setBackground(ClientView.SELECTED_COLOR);
+        }
+    }
+
+    @Override
+    public void mouseExited(MouseEvent mouseEvent) {
+        if(mouseEvent.getSource() instanceof JPanel clickedItem){
+            clickedItem.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+            clickedItem.setBackground(ClientView.CONTENT_BACKGROUND_COLOR);
+        }
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent mouseEvent) {
+        if(mouseEvent.getSource() instanceof JPanel clickedItem){
+            handleItemClick(clickedItem);
+        }
+    }
+
+    @Override
+    public void mousePressed(MouseEvent mouseEvent) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent mouseEvent) {
+
+    }
+
+    public void handleItemClick(JPanel clickedItem){
+        if(clickedItem instanceof PriceItem priceItem){
+            System.out.println("Price  item clicked");
+        }else if(clickedItem instanceof OrderItem orderItem){
+            System.out.println("order item clicked");
         }
     }
 }

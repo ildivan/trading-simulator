@@ -4,14 +4,10 @@ import client.ClientController;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class ClientView extends JFrame implements ActionListener, MouseListener {
+public class ClientView extends JFrame {
     public static final Color HEADING_BACKGROUND_COLOR = new Color(0x555557);
     public static final Color CONTENT_BACKGROUND_COLOR = Color.DARK_GRAY;
     public static final Color FONT_COLOR = Color.WHITE;
@@ -163,7 +159,7 @@ public class ClientView extends JFrame implements ActionListener, MouseListener 
 
     public void addOrder(String side, String name, int quantity, double value){
         OrderItem newItem = new OrderItem(side,name,quantity,value);
-        newItem.addMouseListener(this);
+        newItem.addMouseListener(controller);
         orders.addElementToList(newItem);
     }
 
@@ -195,7 +191,7 @@ public class ClientView extends JFrame implements ActionListener, MouseListener 
 
     public void addStockPrice(String name, double price, boolean isRising){
         PriceItem newItem = new PriceItem(name,price,isRising);
-        newItem.addMouseListener(this);
+        newItem.addMouseListener(controller);
         prices.addElementToList(newItem);
         Object[] stocks = prices.getListOfElements().stream().map(PriceItem::getName).toArray();
         String[] stocksCopy = Arrays.copyOf(stocks, stocks.length, String[].class);
@@ -210,40 +206,5 @@ public class ClientView extends JFrame implements ActionListener, MouseListener 
         return sale;
     }
 
-    @Override
-    public void actionPerformed(ActionEvent actionEvent) {
-    }
 
-    @Override
-    public void mouseEntered(MouseEvent mouseEvent) {
-        if(mouseEvent.getSource() instanceof JPanel clickedItem){
-            clickedItem.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-            clickedItem.setBackground(ClientView.SELECTED_COLOR);
-        }
-    }
-
-    @Override
-    public void mouseExited(MouseEvent mouseEvent) {
-        if(mouseEvent.getSource() instanceof JPanel clickedItem){
-            clickedItem.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-            clickedItem.setBackground(ClientView.CONTENT_BACKGROUND_COLOR);
-        }
-    }
-
-    @Override
-    public void mouseClicked(MouseEvent mouseEvent) {
-        if(mouseEvent.getSource() instanceof JPanel clickedItem){
-            controller.handleItemClick(clickedItem);
-        }
-    }
-
-    @Override
-    public void mousePressed(MouseEvent mouseEvent) {
-
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent mouseEvent) {
-
-    }
 }
