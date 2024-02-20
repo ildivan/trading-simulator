@@ -9,6 +9,10 @@ public class Main {
          ClientView view = controller.getView();
          view.addStockToWallet("BTC", 3,60000.0);
          view.addStockToWallet("ETH", 10,4200.0);
+         view.addOrder("BUY","BTC",2,19000);
+         view.addOrder("SELL","BTC",2,19000);
+         view.addOrder("BUY","ETH",2,400);
+         view.addOrder("SELL","ETH",2,400);
          view.addStockPrice("BTC",20000.0,true);
          view.addStockPrice("ETH",420.0,false);
          ArrayList<Double> prices = new ArrayList<>();

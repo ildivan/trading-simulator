@@ -77,7 +77,6 @@ public class ClientView extends JFrame implements ActionListener, MouseListener 
         JPanel ordersAndStatus = new JPanel();
         ordersAndStatus.setLayout(new GridLayout(2,1,0,0));
         orders = new SectionWithList<>("ORDERS");
-        orders.addElementToList(new OrderItem("BUY","BTC",2,340));
         orderStatus = new OrderStatusPanel();
         orderStatus.setOrder(1234,"18/2/2024 10:35","BUY","BTC",4,19000,"PENDING");
 
@@ -103,7 +102,7 @@ public class ClientView extends JFrame implements ActionListener, MouseListener 
         saleAndGraph.setLayout(new GridLayout(2,1,0,0));
 
         sale = new SalePanel("BUY & SELL");
-        sale.getPurchaseButton().addActionListener(this);
+        sale.getPurchaseButton().addActionListener(controller);
         graph = new GraphSection("GRAPH");
 
         saleAndGraph.add(graph);
@@ -135,6 +134,38 @@ public class ClientView extends JFrame implements ActionListener, MouseListener 
 
     public void addStockToWallet(String name, int quantity, double value){
         wallet.addElementToList(new WalletItem(name,quantity,value));
+    }
+
+    public void setOrders
+            (ArrayList<String> orderSideList, ArrayList<String> nameList,
+             ArrayList<Integer> quantityList, ArrayList<Double> priceList){
+        if(orderSideList.size() != nameList.size() ||
+                nameList.size() != quantityList.size() ||
+                quantityList.size() != priceList.size()){
+            return;
+        }
+        orders.removeAllElements();
+        addOrders(orderSideList,nameList,quantityList,priceList);
+    }
+
+    public void addOrders
+            (ArrayList<String> orderSideList, ArrayList<String> nameList ,
+             ArrayList<Integer> quantityList, ArrayList<Double> priceList){
+        if(orderSideList.size() != nameList.size() ||
+                nameList.size() != quantityList.size() ||
+                quantityList.size() != priceList.size()){
+            return;
+        }
+
+        for (int i = 0; i < nameList.size(); i++) {
+            addOrder(orderSideList.get(i),nameList.get(i),quantityList.get(i),priceList.get(i));
+        }
+    }
+
+    public void addOrder(String side, String name, int quantity, double value){
+        OrderItem newItem = new OrderItem(side,name,quantity,value);
+        newItem.addMouseListener(this);
+        orders.addElementToList(newItem);
     }
 
     public void setStockPrices(ArrayList<String> nameList, ArrayList<Double> priceList, ArrayList<Boolean> risingStatus){
@@ -171,14 +202,12 @@ public class ClientView extends JFrame implements ActionListener, MouseListener 
         graph.setGraph(prices);
     }
 
+    public SalePanel getSalePanel(){
+        return sale;
+    }
+
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
-        JButton purchaseButton = sale.getPurchaseButton();
-        if(actionEvent.getSource() == purchaseButton){
-            System.out.println("Type of order: " + (sale.isSetToBuy() ? "Buy" : "Sell"));
-            System.out.println("Selected stock: " + sale.getSelectedStock());
-            System.out.println("Selected quantity: " + sale.getStockQuantity());
-        }
     }
 
     @Override
