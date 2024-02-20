@@ -78,7 +78,6 @@ public class ClientView extends JFrame implements ActionListener, MouseListener 
         ordersAndStatus.setLayout(new GridLayout(2,1,0,0));
         orders = new SectionWithList<>("ORDERS");
         orderStatus = new OrderStatusPanel();
-        orderStatus.setOrder(1234,"18/2/2024 10:35","BUY","BTC",4,19000,"PENDING");
 
         ordersAndStatus.setBorder(BorderFactory.createMatteBorder(0, 2, 0, 0, ClientView.HEADING_BACKGROUND_COLOR));
         ordersAndStatus.add(orders);
@@ -166,6 +165,11 @@ public class ClientView extends JFrame implements ActionListener, MouseListener 
         OrderItem newItem = new OrderItem(side,name,quantity,value);
         newItem.addMouseListener(this);
         orders.addElementToList(newItem);
+    }
+
+    public void setOrderStatus(int orderId, String date, String orderSide,
+                               String stock, int quantity, double price, String status){
+        orderStatus.setOrder(orderId, date, orderSide, stock, quantity, price, status);
     }
 
     public void setStockPrices(ArrayList<String> nameList, ArrayList<Double> priceList, ArrayList<Boolean> risingStatus){
