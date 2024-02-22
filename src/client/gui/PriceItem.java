@@ -3,7 +3,7 @@ package client.gui;
 import javax.swing.*;
 import java.awt.*;
 
-public class PriceItem extends JPanel {
+public class PriceItem extends ClickableItem {
     private JLabel nameLabel;
     private JLabel priceLabel;
     private JLabel isRisingLabel;

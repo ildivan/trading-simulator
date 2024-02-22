@@ -4,7 +4,7 @@ package client.gui;
 import javax.swing.*;
 import java.awt.*;
 
-public class OrderItem extends JPanel {
+public class OrderItem extends ClickableItem {
     private JLabel orderSideLabel;
     private JLabel nameLabel;
     private JLabel quantityLabel;

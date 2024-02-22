@@ -6,7 +6,6 @@ import client.gui.PriceItem;
 import client.gui.SalePanel;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -51,18 +50,10 @@ public class ClientController implements ActionListener, MouseListener {
 
     @Override
     public void mouseEntered(MouseEvent mouseEvent) {
-        if(mouseEvent.getSource() instanceof JPanel clickedItem){
-            clickedItem.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-            clickedItem.setBackground(ClientView.SELECTED_COLOR);
-        }
     }
 
     @Override
     public void mouseExited(MouseEvent mouseEvent) {
-        if(mouseEvent.getSource() instanceof JPanel clickedItem){
-            clickedItem.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-            clickedItem.setBackground(ClientView.CONTENT_BACKGROUND_COLOR);
-        }
     }
 
     @Override
