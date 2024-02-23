@@ -49,6 +49,7 @@ public class ClientView extends JFrame {
         setProfileTab();
         setMarketTab();
         setVisible(true);
+        addWindowListener(controller);
     }
 
 

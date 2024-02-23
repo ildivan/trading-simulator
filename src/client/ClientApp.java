@@ -1,12 +1,16 @@
-import client.ClientController;
+package client;
+
 import client.gui.ClientView;
 
 import java.util.ArrayList;
 
-public class Main {
+public class ClientApp {
     public static void main(String[] args) {
          ClientController controller = new ClientController();
          ClientView view = controller.getView();
+         ClientModel model = controller.getModel();
+         Thread connectionThread = new Thread(model::connect);
+         connectionThread.start();
          view.addStockToWallet("BTC", 3,60000.0);
          view.addStockToWallet("ETH", 10,4200.0);
          view.addOrder("BUY","BTC",2,19000);
