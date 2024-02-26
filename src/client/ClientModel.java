@@ -4,6 +4,7 @@ import trading.Order;
 import trading.Stock;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ public class ClientModel {
     private AtomicBoolean isRunning;
     private Socket socket;
     private ObjectOutputStream out;
+    private ObjectInputStream in;
 
     public ClientModel(ClientController controller) {
         this.controller = controller;
@@ -33,12 +35,16 @@ public class ClientModel {
             socket = new Socket("localhost", 12345);
 
             out = new ObjectOutputStream(socket.getOutputStream());
-            System.out.println("ENTER");
-            //Communication cycle
-            while (getIsRunning()) {
+            in = new ObjectInputStream(socket.getInputStream());
 
-            }
-            System.out.println("EXIT");
+            Thread receiveThread = new Thread(() -> {
+                while(getIsRunning()){
+                    //do something
+                }
+            });
+
+            receiveThread.start();
+
         } catch (IOException e) {
             System.out.printf("CLIENT ERROR: %s",e.getMessage());
         }

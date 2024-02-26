@@ -14,7 +14,7 @@ public class CommunicationServer {
         this.manager = manager;
     }
     public void start() {
-        ExecutorService executorService = Executors.newFixedThreadPool(5);
+        ExecutorService executorService = Executors.newFixedThreadPool(10);
 
         try(ServerSocket serverSocket = new ServerSocket(12345)){
             System.out.println("Server in attesa di connessioni...");
@@ -23,7 +23,7 @@ public class CommunicationServer {
                 Socket socket = serverSocket.accept();
                 System.out.println("Connessione accettata.");
 
-                Runnable clientHandler = new ClientHandler(socket, manager);
+                Runnable clientHandler = new ClientHandler(1,socket, manager);
                 executorService.execute(clientHandler);
             }
         } catch (IOException e) {
