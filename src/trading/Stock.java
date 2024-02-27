@@ -1,6 +1,8 @@
 package trading;
 
-public enum Stock {
+import java.io.Serializable;
+
+public enum Stock implements Serializable {
     TEXLA,
     GOOGOL,
     MACROSOFT,

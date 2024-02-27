@@ -5,7 +5,6 @@ import exceptions.NegativeQuantityException;
 public class Order {
     private int orderId;
     private OrderSide side;
-
     private Stock stock;
     private int quantity;
     private int price;

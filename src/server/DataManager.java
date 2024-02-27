@@ -7,12 +7,20 @@ import trading.Stock;
 import java.util.HashMap;
 
 public class DataManager {
-    private HashMap<Integer,ClientData> clients;
-    private HashMap<Stock,Integer> prices;
+    private volatile HashMap<Integer,ClientData> clients;
+    private volatile HashMap<Stock,Integer> prices;
 
     public DataManager() {
         clients = new HashMap<>();
         prices = new HashMap<>();
+    }
+
+    public ClientData getClientData(int clientId){
+        return clients.get(clientId);
+    }
+
+    public HashMap<Stock,Integer> getPrices(){
+        return prices;
     }
 
     public synchronized void addClient(int clientId) {
@@ -33,7 +41,7 @@ public class DataManager {
         }
     }
 
-    public void processOrder(int clientId, Order order){
+    public synchronized void processOrder(int clientId, Order order){
 
     }
 }

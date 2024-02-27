@@ -1,5 +1,8 @@
 package client;
 
+import server.ClientData;
+import server.OrderAcceptance;
+import server.OrderRejection;
 import trading.Order;
 import trading.Stock;
 
@@ -39,7 +42,7 @@ public class ClientModel {
 
             Thread receiveThread = new Thread(() -> {
                 while(getIsRunning()){
-                    //do something
+                    handleReceive();
                 }
             });
 
@@ -66,6 +69,26 @@ public class ClientModel {
             }
         } catch (IOException e) {
             System.out.printf("ERROR IN STOPPING CLIENT: %s",e.getMessage());
+        }
+    }
+
+    private void handleReceive() {
+        try{
+            Object received = in.readObject();
+            if(received  instanceof OrderAcceptance acceptance){
+
+            }else if(received instanceof OrderRejection rejection){
+
+            }else if(received instanceof ClientData data){
+
+            }else if(received instanceof HashMap<?,?> receivedPrices){
+                @SuppressWarnings("unchecked")
+                HashMap<Stock, Integer> castedPrices = (HashMap<Stock, Integer>) receivedPrices;
+            }
+        }catch(IOException e){
+
+        } catch (ClassNotFoundException e) {
+
         }
     }
 }
