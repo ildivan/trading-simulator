@@ -1,4 +1,4 @@
-package server;
+package trading;
 
 import trading.Order;
 

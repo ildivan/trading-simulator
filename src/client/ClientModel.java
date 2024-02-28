@@ -1,9 +1,8 @@
 package client;
 
 import server.ClientData;
-import server.OrderAcceptance;
-import server.OrderRejection;
-import trading.Order;
+import trading.OrderAcceptance;
+import trading.OrderRejection;
 import trading.Stock;
 
 import java.io.IOException;
@@ -11,15 +10,13 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ClientModel {
     private ClientController controller;
-    private HashMap<Stock,Integer> wallet;
-    private HashMap<Stock,List<Integer>> prices;
-    private List<Order> orders;
+    private ClientData data;
+    private TreeMap<Stock,ArrayList<Integer>> prices;
     private AtomicBoolean isRunning;
     private Socket socket;
     private ObjectOutputStream out;
@@ -27,9 +24,8 @@ public class ClientModel {
 
     public ClientModel(ClientController controller) {
         this.controller = controller;
-        this.wallet = new HashMap<>();
-        this.prices = new HashMap<>();
-        this.orders = new ArrayList<>();
+        this.data = new ClientData();
+        this.prices = new TreeMap<>();
         isRunning = new AtomicBoolean(true);
     }
 
@@ -74,21 +70,66 @@ public class ClientModel {
 
     private void handleReceive() {
         try{
-            Object received = in.readObject();
+            Object received;
+            synchronized (this){
+                received = in.readObject();
+            }
             if(received  instanceof OrderAcceptance acceptance){
 
             }else if(received instanceof OrderRejection rejection){
 
-            }else if(received instanceof ClientData data){
-
-            }else if(received instanceof HashMap<?,?> receivedPrices){
+            }else if(received instanceof ClientData receivedData){
+                data = receivedData;
+            }else if(received instanceof TreeMap<?,?> receivedPrices){
                 @SuppressWarnings("unchecked")
-                HashMap<Stock, Integer> castedPrices = (HashMap<Stock, Integer>) receivedPrices;
+                TreeMap<Stock, Integer> castedPrices = (TreeMap<Stock, Integer>) receivedPrices;
+                updatePrices(castedPrices);
             }
-        }catch(IOException e){
+        }catch(IOException | ClassNotFoundException ignored){}
+    }
 
-        } catch (ClassNotFoundException e) {
+    private void updatePrices(TreeMap<Stock,Integer> receivedPrices){
+        ArrayList<String> names = new ArrayList<>(
+                receivedPrices.keySet()
+                        .stream()
+                        .map(Stock::toString)
+                        .toList()
+        );
 
+        ArrayList<Double> values = new ArrayList<>(
+                receivedPrices.values()
+                        .stream()
+                        .map((value) -> value/100.0)
+                        .toList()
+        );
+
+        for(Stock stock : receivedPrices.keySet()){
+            if(prices.containsKey(stock) && prices.get(stock) != null){
+                ArrayList<Integer> stockPrices = prices.get(stock);
+                stockPrices.add(receivedPrices.get(stock));
+            }else{
+                ArrayList<Integer> newList = new ArrayList<>();
+                newList.add(receivedPrices.get(stock));
+                prices.put(stock,newList);
+            }
         }
+
+        for(Stock stock : prices.keySet()){
+            if(!receivedPrices.containsKey(stock)){
+                prices.remove(stock);
+            }
+        }
+
+        ArrayList<Boolean> risingStatusList = new ArrayList<>();
+        for(Stock stock : prices.keySet()){
+            boolean isRising = false;
+            ArrayList<Integer> stockPrices = prices.get(stock);
+            if(stockPrices.get(0) <= stockPrices.get(stockPrices.size()-1)){
+                isRising = true;
+            }
+            risingStatusList.add(isRising);
+        }
+
+        controller.updatePrices(names,values,risingStatusList);
     }
 }

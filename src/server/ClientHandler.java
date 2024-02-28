@@ -1,13 +1,15 @@
 package server;
 
 import trading.Order;
+import trading.OrderAcceptance;
+import trading.OrderRejection;
 import trading.Stock;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.HashMap;
+import java.util.TreeMap;
 
 public class ClientHandler implements Runnable{
     private final int clientId;
@@ -58,7 +60,7 @@ public class ClientHandler implements Runnable{
                 out.writeObject(clientData);
             }
         }
-        HashMap<Stock,Integer> prices = manager.getPrices();
+        TreeMap<Stock,Integer> prices = manager.getPrices();
         synchronized (this){
             out.writeObject(prices);
         }

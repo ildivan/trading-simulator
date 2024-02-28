@@ -69,6 +69,12 @@ public class ClientView extends JFrame {
         walletAndOrders.setLayout(new GridLayout(1,2,0,0));
         walletAndOrders.setBackground(ClientView.CONTENT_BACKGROUND_COLOR);
         wallet = new SectionWithList<>("WALLET");
+
+        JPanel cashPanel = new JPanel();
+        cashPanel.setPreferredSize(new Dimension(wallet.getWidth(),70));
+        cashPanel.setBackground(ClientView.CONTENT_BACKGROUND_COLOR.brighter());
+
+        wallet.add(cashPanel,BorderLayout.SOUTH);
         wallet.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 2, ClientView.HEADING_BACKGROUND_COLOR));
 
         JPanel ordersAndStatus = new JPanel();

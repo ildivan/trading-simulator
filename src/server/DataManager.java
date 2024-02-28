@@ -5,21 +5,22 @@ import trading.OrderSide;
 import trading.Stock;
 
 import java.util.HashMap;
+import java.util.TreeMap;
 
 public class DataManager {
     private volatile HashMap<Integer,ClientData> clients;
-    private volatile HashMap<Stock,Integer> prices;
+    private volatile TreeMap<Stock,Integer> prices;
 
     public DataManager() {
         clients = new HashMap<>();
-        prices = new HashMap<>();
+        prices = new TreeMap<>();
     }
 
     public ClientData getClientData(int clientId){
         return clients.get(clientId);
     }
 
-    public HashMap<Stock,Integer> getPrices(){
+    public TreeMap<Stock,Integer> getPrices(){
         return prices;
     }
 
