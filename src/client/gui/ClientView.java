@@ -25,20 +25,6 @@ public class ClientView extends JFrame {
     private GraphSection graph;
     private SalePanel sale;
 
-    static class CustomTabbedPane extends JTabbedPane {
-        public CustomTabbedPane(int tabPlacement){
-            super(tabPlacement);
-        }
-        @Override
-        protected void paintComponent(Graphics g) {
-            // Set the background color behind all tabs
-            g.setColor(new Color(0x23262D));
-            g.fillRect(0, 0, getWidth(), getHeight());
-            super.paintComponent(g);
-
-        }
-    }
-
     public ClientView(ClientController controller){
         super("Trading App");
         this.controller = controller;
@@ -115,6 +101,9 @@ public class ClientView extends JFrame {
         tabs.add("  MARKET  ",marketPanel);
     }
 
+    public void setCash(double cash){
+
+    }
 
     public void setStocksInWallet(ArrayList<String> nameList, ArrayList<Integer> quantityList, ArrayList<Double> valueList){
         if(nameList.size() != quantityList.size() || nameList.size() != valueList.size()){

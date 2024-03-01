@@ -80,6 +80,7 @@ public class ClientModel {
 
             }else if(received instanceof ClientData receivedData){
                 data = receivedData;
+                updateClientData();
             }else if(received instanceof TreeMap<?,?> receivedPrices){
                 @SuppressWarnings("unchecked")
                 TreeMap<Stock, Integer> castedPrices = (TreeMap<Stock, Integer>) receivedPrices;
@@ -88,21 +89,18 @@ public class ClientModel {
         }catch(IOException | ClassNotFoundException ignored){}
     }
 
+    private void updateClientData() {
+        TreeMap<Stock,Integer> lastPrices = new TreeMap<>();
+        for(Stock stock : prices.keySet()){
+            ArrayList<Integer> priceList = prices.get(stock);
+            int lastPrice = priceList.get(priceList.size() - 1);
+            lastPrices.put(stock,lastPrice);
+        }
+        controller.updateWallet(data,lastPrices);
+        controller.updateOrders(data);
+    }
+
     private void updatePrices(TreeMap<Stock,Integer> receivedPrices){
-        ArrayList<String> names = new ArrayList<>(
-                receivedPrices.keySet()
-                        .stream()
-                        .map(Stock::toString)
-                        .toList()
-        );
-
-        ArrayList<Double> values = new ArrayList<>(
-                receivedPrices.values()
-                        .stream()
-                        .map((value) -> value/100.0)
-                        .toList()
-        );
-
         for(Stock stock : receivedPrices.keySet()){
             if(prices.containsKey(stock) && prices.get(stock) != null){
                 ArrayList<Integer> stockPrices = prices.get(stock);
@@ -120,16 +118,6 @@ public class ClientModel {
             }
         }
 
-        ArrayList<Boolean> risingStatusList = new ArrayList<>();
-        for(Stock stock : prices.keySet()){
-            boolean isRising = false;
-            ArrayList<Integer> stockPrices = prices.get(stock);
-            if(stockPrices.get(0) <= stockPrices.get(stockPrices.size()-1)){
-                isRising = true;
-            }
-            risingStatusList.add(isRising);
-        }
-
-        controller.updatePrices(names,values,risingStatusList);
+        controller.updatePrices(prices);
     }
 }

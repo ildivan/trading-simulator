@@ -4,10 +4,13 @@ import client.gui.ClientView;
 import client.gui.OrderItem;
 import client.gui.PriceItem;
 import client.gui.SalePanel;
+import server.ClientData;
+import trading.Stock;
 
 import javax.swing.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.TreeMap;
 
 public class ClientController implements ActionListener, MouseListener, WindowListener {
     private ClientModel model;
@@ -28,12 +31,57 @@ public class ClientController implements ActionListener, MouseListener, WindowLi
         return view;
     }
 
-    public void updateWallet(ArrayList<String> stockNames, ArrayList<Integer> quantityList, ArrayList<Double> values){
-        view.setStocksInWallet(stockNames,quantityList,values);
+    public void updateWallet(ClientData data, TreeMap<Stock,Integer> prices){
+        ArrayList<String> names = getStockNames(prices);
+
+        ArrayList<Integer> quantities = new ArrayList<>(
+                data.getWallet().values()
+        );
+
+        //Wallet value in dollars for each stock
+        ArrayList<Double> values = new ArrayList<>();
+        for (Stock stock : prices.keySet()){
+            int price = prices.get(stock);
+            values.add((data.getWallet().get(stock) * price) / 100.0);
+        }
+
+        view.setStocksInWallet(names,quantities,values);
+        view.setCash(data.getCash());
     }
 
-    public void updatePrices(ArrayList<String> stockNames, ArrayList<Double> priceList, ArrayList<Boolean> risingStatus){
-        view.setStockPrices(stockNames, priceList, risingStatus);
+    public void updateOrders(ClientData data){
+    }
+
+    public void updatePrices(TreeMap<Stock,ArrayList<Integer>> prices){
+        ArrayList<String> names = getStockNames(prices);
+
+        ArrayList<Double> values = new ArrayList<>(
+                prices.values()
+                        .stream()
+                        .map((list) -> list.get(list.size()-1))
+                        .map((value) -> value/100.0)
+                        .toList()
+        );
+
+        ArrayList<Boolean> risingStatusList = new ArrayList<>(
+                prices.values()
+                        .stream()
+                        .map((list) -> list.get(0) <= list.get(list.size()-1))
+                        .toList()
+        );
+
+        view.setStockPrices(names, values, risingStatusList);
+    }
+
+    private ArrayList<String> getStockNames(TreeMap<Stock,?> prices){
+        ArrayList<String> names = new ArrayList<>(
+                prices.keySet()
+                        .stream()
+                        .map(Stock::toString)
+                        .toList()
+        );
+
+        return names;
     }
 
     @Override
