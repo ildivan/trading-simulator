@@ -3,10 +3,11 @@ package server;
 import trading.Order;
 import trading.Stock;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class ClientData {
+public class ClientData implements Serializable {
     private Integer cash;
     private HashMap<Stock,Integer> wallet;
     private ArrayList<Order> orders;

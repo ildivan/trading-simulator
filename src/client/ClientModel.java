@@ -1,9 +1,8 @@
 package client;
 
+import exceptions.OrderNotFoundException;
 import server.ClientData;
-import trading.OrderAcceptance;
-import trading.OrderRejection;
-import trading.Stock;
+import trading.*;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -119,5 +118,18 @@ public class ClientModel {
         }
 
         controller.updatePrices(prices);
+    }
+
+    public Order getOrderFromId(int orderId) throws OrderNotFoundException {
+        for(Order order : data.getOrders()){
+            if(order.getOrderId() == orderId){
+                return order;
+            }
+        }
+        throw new OrderNotFoundException(orderId);
+    }
+
+    public OrderStatus getStatus(Order order){
+        return OrderStatus.ACCEPTED;
     }
 }

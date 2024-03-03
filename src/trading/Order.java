@@ -2,7 +2,9 @@ package trading;
 
 import exceptions.NegativeQuantityException;
 
-public class Order {
+import java.io.Serializable;
+
+public class Order implements Serializable {
     private int orderId;
     private OrderSide side;
     private Stock stock;

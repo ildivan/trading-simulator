@@ -19,6 +19,7 @@ public class ClientView extends JFrame {
     private ClientController controller;
     private CustomTabbedPane tabs;
     private SectionWithList<WalletItem> wallet;
+    private JLabel cashLabel;
     private SectionWithList<OrderItem> orders;
     private OrderStatusPanel orderStatus;
     private SectionWithList<PriceItem> prices;
@@ -58,7 +59,18 @@ public class ClientView extends JFrame {
 
         JPanel cashPanel = new JPanel();
         cashPanel.setPreferredSize(new Dimension(wallet.getWidth(),70));
-        cashPanel.setBackground(ClientView.CONTENT_BACKGROUND_COLOR.brighter());
+        cashPanel.setBackground(ClientView.CONTENT_BACKGROUND_COLOR);
+        cashPanel.setLayout(new BoxLayout(cashPanel,BoxLayout.X_AXIS));
+        cashPanel.add(Box.createGlue());
+
+
+        cashLabel = new JLabel();
+        cashLabel.setFont(HEADING_FONT);
+        cashLabel.setForeground(FONT_COLOR);
+        setCash(0);
+
+        cashPanel.add(cashLabel);
+        cashPanel.add(Box.createGlue());
 
         wallet.add(cashPanel,BorderLayout.SOUTH);
         wallet.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 2, ClientView.HEADING_BACKGROUND_COLOR));
@@ -102,7 +114,7 @@ public class ClientView extends JFrame {
     }
 
     public void setCash(double cash){
-
+        cashLabel.setText(String.format("CASH: %.2f$",cash));
     }
 
     public void setStocksInWallet(ArrayList<String> nameList, ArrayList<Integer> quantityList, ArrayList<Double> valueList){
@@ -128,40 +140,38 @@ public class ClientView extends JFrame {
     }
 
     public void setOrders
-            (ArrayList<String> orderSideList, ArrayList<String> nameList,
-             ArrayList<Integer> quantityList, ArrayList<Double> priceList){
+            (ArrayList<Integer> orderIdList,ArrayList<String> orderSideList,
+             ArrayList<String> nameList, ArrayList<Integer> quantityList){
         if(orderSideList.size() != nameList.size() ||
-                nameList.size() != quantityList.size() ||
-                quantityList.size() != priceList.size()){
+                nameList.size() != quantityList.size()){
             return;
         }
         orders.removeAllElements();
-        addOrders(orderSideList,nameList,quantityList,priceList);
+        addOrders(orderIdList,orderSideList,nameList,quantityList);
     }
 
     public void addOrders
-            (ArrayList<String> orderSideList, ArrayList<String> nameList ,
-             ArrayList<Integer> quantityList, ArrayList<Double> priceList){
+            (ArrayList<Integer> orderIdList,ArrayList<String> orderSideList,
+             ArrayList<String> nameList , ArrayList<Integer> quantityList){
         if(orderSideList.size() != nameList.size() ||
-                nameList.size() != quantityList.size() ||
-                quantityList.size() != priceList.size()){
+                nameList.size() != quantityList.size()){
             return;
         }
 
         for (int i = 0; i < nameList.size(); i++) {
-            addOrder(orderSideList.get(i),nameList.get(i),quantityList.get(i),priceList.get(i));
+            addOrder(orderIdList.get(i),orderSideList.get(i),nameList.get(i),quantityList.get(i));
         }
     }
 
-    public void addOrder(String side, String name, int quantity, double value){
-        OrderItem newItem = new OrderItem(side,name,quantity,value);
+    public void addOrder(int orderId, String side, String name, int quantity){
+        OrderItem newItem = new OrderItem(orderId, side, name, quantity);
         newItem.addMouseListener(controller);
         orders.addElementToList(newItem);
     }
 
-    public void setOrderStatus(int orderId, String date, String orderSide,
+    public void setOrderStatus(int orderId, String orderSide,
                                String stock, int quantity, double price, String status){
-        orderStatus.setOrder(orderId, date, orderSide, stock, quantity, price, status);
+        orderStatus.setOrder(orderId, orderSide, stock, quantity, price, status);
     }
 
     public void setStockPrices(ArrayList<String> nameList, ArrayList<Double> priceList, ArrayList<Boolean> risingStatus){

@@ -5,21 +5,23 @@ import javax.swing.*;
 import java.awt.*;
 
 public class OrderItem extends ClickableItem {
+    private int orderId;
     private JLabel orderSideLabel;
     private JLabel nameLabel;
     private JLabel quantityLabel;
-    private JLabel priceLabel;
 
-    public OrderItem(String orderSide, String stockName, int quantity, double price){
+    public OrderItem(int orderId, String orderSide, String stockName, int quantity){
         super();
-        setLayout(new GridLayout(1,4));
+        this.orderId = orderId;
+        setLayout(new GridLayout(1,3));
         setBackground(ClientView.CONTENT_BACKGROUND_COLOR);
-        setupLabels(orderSide,stockName,quantity,price);
+        setupLabels(orderSide,stockName,quantity);
     }
 
-    private void setupLabels(String orderSide, String name, int quantity, double price) {
+    private void setupLabels(String orderSide, String name, int quantity) {
         orderSideLabel = setupLabel(orderSide, new Font("Times New Roman", Font.BOLD, 16));
         orderSideLabel.setBorder(BorderFactory.createEmptyBorder(0, 30, 0, 0));
+        orderSideLabel.setForeground(orderSideLabel.getText().equals("BUY") ? new Color(0x7BCA44) : new Color(0xFF3737));
         add(orderSideLabel);
 
         nameLabel = setupLabel(name, ClientView.CONTENT_FONT);
@@ -29,10 +31,6 @@ public class OrderItem extends ClickableItem {
         quantityLabel = setupLabel("Q: " + quantity, ClientView.CONTENT_FONT);
         quantityLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 30));
         add(quantityLabel);
-
-        priceLabel = setupLabel("price: " + price, ClientView.CONTENT_FONT);
-        priceLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 30));
-        add(priceLabel);
     }
 
     private JLabel setupLabel(String text, Font font) {
@@ -40,6 +38,11 @@ public class OrderItem extends ClickableItem {
         label.setText(text);
         label.setFont(font);
         label.setForeground(ClientView.FONT_COLOR);
+        label.setHorizontalAlignment(SwingConstants.CENTER);
         return label;
+    }
+
+    public int getOrderId(){
+        return orderId;
     }
 }

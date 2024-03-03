@@ -6,13 +6,12 @@ import java.awt.*;
 public class OrderStatusPanel extends Section {
     public OrderStatusPanel() {
         super("ORDER");
-        content.setLayout(new GridLayout(7,1));
+        content.setLayout(new GridLayout(6,1));
     }
 
-    public void setOrder(int orderId, String date, String orderSide, String stock, int quantity, double price, String status){
+    public void setOrder(int orderId, String orderSide, String stock, int quantity, double price, String status){
         content.removeAll();
         content.add(getRow("Order number: " + orderId));
-        content.add(getRow("Date and time: " + date));
         content.add(getRow("Type of order: " + orderSide));
         content.add(getRow("Stock: " + stock));
         content.add(getRow("Quantity: " + quantity));

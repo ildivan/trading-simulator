@@ -1,8 +1,8 @@
 package trading;
 
-import trading.Order;
+import java.io.Serializable;
 
-public class OrderAcceptance {
+public class OrderAcceptance implements Serializable {
     private final Order acceptedOrder;
     public OrderAcceptance(Order order){
         acceptedOrder = order;

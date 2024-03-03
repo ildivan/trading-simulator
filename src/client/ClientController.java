@@ -5,6 +5,8 @@ import client.gui.OrderItem;
 import client.gui.PriceItem;
 import client.gui.SalePanel;
 import server.ClientData;
+import trading.Order;
+import trading.OrderSide;
 import trading.Stock;
 
 import javax.swing.*;
@@ -19,8 +21,6 @@ public class ClientController implements ActionListener, MouseListener, WindowLi
     public ClientController() {
         this.model = new ClientModel(this);
         this.view = new ClientView(this);
-
-        
     }
 
     public ClientModel getModel() {
@@ -124,8 +124,23 @@ public class ClientController implements ActionListener, MouseListener, WindowLi
         if(clickedItem instanceof PriceItem priceItem){
             System.out.println("Price  item clicked");
         }else if(clickedItem instanceof OrderItem orderItem){
-            System.out.println("order item clicked");
+            int orderId = orderItem.getOrderId();
+            try{
+                Order order = model.getOrderFromId(orderId);
+                updateOrderStatus(order);
+            }catch(Exception ignored){}
         }
+    }
+
+    private void updateOrderStatus(Order order) {
+        view.setOrderStatus(
+                order.getOrderId(),
+                (order.getSide() == OrderSide.BID ? "BUY" : "SELL"),
+                order.getStock().toString(),
+                order.getQuantity(),
+                order.getPrice(),
+                model.getStatus(order).toString()
+        );
     }
 
     @Override
