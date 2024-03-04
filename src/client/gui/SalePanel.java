@@ -16,6 +16,7 @@ public class SalePanel extends Section implements ActionListener {
     private JRadioButton sellButton;
     private JComboBox<String> stockSelection;
     private JTextField quantityField;
+    private JTextField priceField;
     private JButton purchaseButton;
     private static final Font INPUT_FONT = new Font("TImes New Roman",Font.BOLD,16);
     private final ChangeListener BUY_CHANGE_LISTENER;
@@ -132,13 +133,7 @@ public class SalePanel extends Section implements ActionListener {
         selectQuantityLabel.setBorder(new EmptyBorder(0,0,0,30));
 
         quantityField = new JTextField();
-        quantityField.setPreferredSize(new Dimension(100, 40));
-        quantityField.setMaximumSize(new Dimension(100, 40));
-        quantityField.setHorizontalAlignment(JTextField.RIGHT);
-        quantityField.setBackground(ClientView.HEADING_BACKGROUND_COLOR);
-        quantityField.setFont(INPUT_FONT);
-        quantityField.setForeground(ClientView.FONT_COLOR);
-        quantityField.setCaretColor(ClientView.FONT_COLOR);
+        setupTextField(quantityField);
 
         ((AbstractDocument) quantityField.getDocument()).setDocumentFilter(new NumericFilter());
 
@@ -151,14 +146,8 @@ public class SalePanel extends Section implements ActionListener {
         selectPriceLabel.setForeground(ClientView.FONT_COLOR);
         selectPriceLabel.setBorder(new EmptyBorder(0,30,0,30));
 
-        JTextField priceField = new JTextField();
-        priceField.setPreferredSize(new Dimension(100, 40));
-        priceField.setMaximumSize(new Dimension(100, 40));
-        priceField.setHorizontalAlignment(JTextField.RIGHT);
-        priceField.setBackground(ClientView.HEADING_BACKGROUND_COLOR);
-        priceField.setFont(INPUT_FONT);
-        priceField.setForeground(ClientView.FONT_COLOR);
-        priceField.setCaretColor(ClientView.FONT_COLOR);
+        priceField = new JTextField();
+        setupTextField(priceField);
 
         ((AbstractDocument) priceField.getDocument()).setDocumentFilter(new NumericFilter());
         quantityAndPricePanel.add(selectPriceLabel);
@@ -167,6 +156,16 @@ public class SalePanel extends Section implements ActionListener {
         quantityAndPricePanel.add(Box.createGlue());
         quantityAndPricePanel.setBackground(ClientView.CONTENT_BACKGROUND_COLOR);
         content.add(quantityAndPricePanel);
+    }
+
+    private void setupTextField(JTextField field){
+        field.setPreferredSize(new Dimension(100, 40));
+        field.setMaximumSize(new Dimension(100, 40));
+        field.setHorizontalAlignment(JTextField.RIGHT);
+        field.setBackground(ClientView.HEADING_BACKGROUND_COLOR);
+        field.setFont(INPUT_FONT);
+        field.setForeground(ClientView.FONT_COLOR);
+        field.setCaretColor(ClientView.FONT_COLOR);
     }
 
     private static class NumericFilter extends DocumentFilter {
@@ -232,13 +231,21 @@ public class SalePanel extends Section implements ActionListener {
     }
     public void setSelectionStocks(String... stocks){
         stockSelection.removeAllItems();
+        if(stocks.length == 0){
+            return;
+        }
+
         for(int i = 0; i < stocks.length; i++){
             stockSelection.insertItemAt(stocks[i],i);
         }
         stockSelection.setSelectedIndex(0);
     }
 
-    public int getStockQuantity(){
+    public int getQuantity(){
         return (quantityField.getText().isBlank() ? 0 : Integer.parseInt(quantityField.getText()));
+    }
+
+    public int getPrice(){
+        return (priceField.getText().isBlank() ? 0 : Integer.parseInt(quantityField.getText()));
     }
 }

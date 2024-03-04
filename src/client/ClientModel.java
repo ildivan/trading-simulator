@@ -52,7 +52,7 @@ public class ClientModel {
         return isRunning.get();
     }
 
-    public void stopClient() {
+    public synchronized void stopClient() {
         isRunning.set(false);
 
         try {
@@ -67,12 +67,19 @@ public class ClientModel {
         }
     }
 
+    public synchronized void sendOrder(OrderSide side, Stock stock, int quantity, int price){
+        Order orderToSend = new Order(side,stock,quantity,price);
+        try{
+            out.writeObject(orderToSend);
+        }catch(IOException e){
+            System.out.println("PROBLEM WITH SERVER CONNECTION");
+        }
+    }
+
     private void handleReceive() {
         try{
             Object received;
-            synchronized (this){
-                received = in.readObject();
-            }
+            received = in.readObject();
             if(received  instanceof OrderAcceptance acceptance){
 
             }else if(received instanceof OrderRejection rejection){

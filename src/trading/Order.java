@@ -19,6 +19,10 @@ public class Order implements Serializable {
         this.price = price;
     }
 
+    public Order(OrderSide side,  Stock stock, int quantity, int price) {
+        this(0,side,stock,quantity,price);
+    }
+
     public int getOrderId() {
         return orderId;
     }

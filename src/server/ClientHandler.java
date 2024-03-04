@@ -25,7 +25,7 @@ public class ClientHandler implements Runnable{
     }
 
     @Override
-    public void run() {
+    public void run(){
         try {
             in = new ObjectInputStream(clientSocket.getInputStream());
             out = new ObjectOutputStream((clientSocket.getOutputStream()));
@@ -34,6 +34,7 @@ public class ClientHandler implements Runnable{
                 Object receivedObject = in.readObject();
 
                 if(receivedObject instanceof Order receivedOrder){
+                    System.out.println("ORDER RECEIVED");
                     if(manager.isOrderValid(clientId, receivedOrder)){
                         manager.processOrder(clientId, receivedOrder);
                         synchronized (this){

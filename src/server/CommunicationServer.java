@@ -13,16 +13,19 @@ public class CommunicationServer {
 
     private final DataManager manager;
     private final ArrayList<ClientHandler> handlers;
-    private static final int DELAY = 5;
+    private final ExecutorService clientsThreadManager;
+    private final ScheduledExecutorService dataSender;
+    private static final int DELAY = 1;
 
     public CommunicationServer(DataManager manager){
         this.manager = manager;
-        handlers = new ArrayList<>();
+        this.handlers = new ArrayList<>();
+        this.clientsThreadManager = Executors.newFixedThreadPool(10);
+        this.dataSender = Executors.newSingleThreadScheduledExecutor();
     }
     public void start() {
         int clientId = 0;
-        ExecutorService clientsThreadManager = Executors.newFixedThreadPool(10);
-        ScheduledExecutorService dataSender = Executors.newSingleThreadScheduledExecutor();
+
         // Schedule sending data to the client every 5 seconds
         dataSender.scheduleAtFixedRate(this::sendDataToAllClients, 0, DELAY, TimeUnit.SECONDS);
 
@@ -38,20 +41,24 @@ public class CommunicationServer {
                 clientsThreadManager.execute(clientHandler);
             }
         } catch (IOException e) {
-            System.out.printf("SERVER ERROR: %s\n",e.getMessage());
+            System.out.println("SERVER ERROR");
         } finally {
             clientsThreadManager.shutdown();
         }
     }
 
     private void sendDataToAllClients(){
-        for (ClientHandler handler : handlers){
-            try{
-                handler.sendData();
-            }catch(IOException e){
-                System.out.printf("ERROR SENDING DATA TO CLIENT: %s",e.getMessage());
-            }
-        }
+        handlers.removeIf(
+                (handler) -> {
+                    try{
+                        handler.sendData();
+                        return false;
+                    }catch(IOException e){
+                        System.out.println("DELETING CLIENT HANDLER");
+                        return true;
+                    }
+                }
+        );
     }
 
     public static void main(String[] args) {

@@ -4,6 +4,7 @@ import client.gui.ClientView;
 import client.gui.OrderItem;
 import client.gui.PriceItem;
 import client.gui.SalePanel;
+import exceptions.StockNotFoundException;
 import server.ClientData;
 import trading.Order;
 import trading.OrderSide;
@@ -89,9 +90,15 @@ public class ClientController implements ActionListener, MouseListener, WindowLi
         SalePanel sale = view.getSalePanel();
         JButton purchaseButton = sale.getPurchaseButton();
         if(actionEvent.getSource() == purchaseButton){
-            System.out.println("Type of order: " + (sale.isSetToBuy() ? "Buy" : "Sell"));
-            System.out.println("Selected stock: " + sale.getSelectedStock());
-            System.out.println("Selected quantity: " + sale.getStockQuantity());
+            try {
+                OrderSide side = sale.isSetToBuy() ? OrderSide.BID : OrderSide.ASK;
+                Stock stock = Stock.find(sale.getSelectedStock());
+                int quantity = sale.getQuantity();
+                int price = sale.getPrice();
+                if(quantity != 0 && price != 0){
+                    model.sendOrder(side,stock,quantity,price);
+                }
+            } catch (StockNotFoundException ignored) {}
         }
     }
 
