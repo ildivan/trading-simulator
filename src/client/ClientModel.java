@@ -20,6 +20,7 @@ public class ClientModel {
     private Socket socket;
     private ObjectOutputStream out;
     private ObjectInputStream in;
+    private static final int MAX_PRICES_STORED = 15;
 
     public ClientModel(ClientController controller) {
         this.controller = controller;
@@ -111,6 +112,9 @@ public class ClientModel {
             if(prices.containsKey(stock) && prices.get(stock) != null){
                 ArrayList<Integer> stockPrices = prices.get(stock);
                 stockPrices.add(receivedPrices.get(stock));
+                if(stockPrices.size() > MAX_PRICES_STORED){
+                    stockPrices.remove(0);
+                }
             }else{
                 ArrayList<Integer> newList = new ArrayList<>();
                 newList.add(receivedPrices.get(stock));
@@ -138,5 +142,9 @@ public class ClientModel {
 
     public OrderStatus getStatus(Order order){
         return OrderStatus.ACCEPTED;
+    }
+
+    public ArrayList<Integer> getPrices(Stock stock){
+        return prices.get(stock);
     }
 }

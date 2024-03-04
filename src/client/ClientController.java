@@ -129,7 +129,13 @@ public class ClientController implements ActionListener, MouseListener, WindowLi
 
     public void handleItemClick(JPanel clickedItem){
         if(clickedItem instanceof PriceItem priceItem){
-            System.out.println("Price  item clicked");
+            String stockName = priceItem.getName();
+            try{
+                Stock stock = Stock.find(stockName);
+                ArrayList<Integer> pricesInCents = model.getPrices(stock);
+                ArrayList<Double> prices = new ArrayList<>(pricesInCents.stream().map((v) -> v/100.0).toList());
+                view.setGraphPrices(prices);
+            }catch(Exception ignored){}
         }else if(clickedItem instanceof OrderItem orderItem){
             int orderId = orderItem.getOrderId();
             try{
