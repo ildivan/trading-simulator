@@ -8,6 +8,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class CommunicationServer {
 
@@ -15,6 +16,7 @@ public class CommunicationServer {
     private final ArrayList<ClientHandler> handlers;
     private final ExecutorService clientsThreadManager;
     private final ScheduledExecutorService dataSender;
+    private final AtomicInteger clientIdCounter;
     private static final int DELAY = 1;
 
     public CommunicationServer(DataManager manager){
@@ -22,10 +24,9 @@ public class CommunicationServer {
         this.handlers = new ArrayList<>();
         this.clientsThreadManager = Executors.newFixedThreadPool(10);
         this.dataSender = Executors.newSingleThreadScheduledExecutor();
+        this.clientIdCounter = new AtomicInteger(0);
     }
     public void start() {
-        int clientId = 0;
-
         // Schedule sending data to the client every 5 seconds
         dataSender.scheduleAtFixedRate(this::sendDataToAllClients, 0, DELAY, TimeUnit.SECONDS);
 
@@ -35,8 +36,8 @@ public class CommunicationServer {
             while (true) {
                 Socket socket = serverSocket.accept();
                 System.out.println("Connessione accettata.");
-                clientId += 1;
-                ClientHandler clientHandler = new ClientHandler(clientId,socket, manager);
+                clientIdCounter.addAndGet(1);
+                ClientHandler clientHandler = new ClientHandler(clientIdCounter.get(),socket, manager);
                 handlers.add(clientHandler);
                 clientsThreadManager.execute(clientHandler);
             }
@@ -44,6 +45,7 @@ public class CommunicationServer {
             System.out.println("SERVER ERROR");
         } finally {
             clientsThreadManager.shutdown();
+            dataSender.shutdown();
         }
     }
 
@@ -51,6 +53,7 @@ public class CommunicationServer {
         handlers.removeIf(
                 (handler) -> {
                     try{
+                        System.out.println("SENDING DATA");
                         handler.sendData();
                         return false;
                     }catch(IOException e){
