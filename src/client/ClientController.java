@@ -1,9 +1,6 @@
 package client;
 
-import client.gui.ClientView;
-import client.gui.OrderItem;
-import client.gui.PriceItem;
-import client.gui.SalePanel;
+import client.gui.*;
 import exceptions.StockNotFoundException;
 import server.ClientData;
 import trading.Order;
@@ -112,7 +109,7 @@ public class ClientController implements ActionListener, MouseListener, WindowLi
 
     @Override
     public void mouseClicked(MouseEvent mouseEvent) {
-        if(mouseEvent.getSource() instanceof JPanel clickedItem){
+        if(mouseEvent.getSource() instanceof ClickableItem clickedItem){
             handleItemClick(clickedItem);
         }
     }

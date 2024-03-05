@@ -37,6 +37,7 @@ public class CommunicationServer {
                 Socket socket = serverSocket.accept();
                 System.out.println("Connessione accettata.");
                 clientIdCounter.addAndGet(1);
+                manager.addClient(clientIdCounter.get());
                 ClientHandler clientHandler = new ClientHandler(clientIdCounter.get(),socket, manager);
                 handlers.add(clientHandler);
                 clientsThreadManager.execute(clientHandler);

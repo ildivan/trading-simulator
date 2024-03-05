@@ -1,27 +1,30 @@
 package trading;
 
 import exceptions.EmptyLimitException;
+import server.DataManager;
 
 import java.util.TreeMap;
 
 public class TradingEngine {
+    private DataManager manager;
     private TreeMap<Integer,Limit> bids;
     private TreeMap<Integer,Limit> asks;
 
-    public TradingEngine(){
+    public TradingEngine(DataManager manager){
         bids = new TreeMap<>((a , b) -> -Integer.compare(a,b)); //bid with the highest price is first
         asks = new TreeMap<>(Integer::compare); //ask with the lowest price is first
+        this.manager = manager;
     }
 
-    public void insertOrder(Order order){
+    public synchronized void insertOrder(Order order){
         if(order.getSide() == OrderSide.BID){
             putOrderInMap(order,bids);
-        }else{ // order.getSide() == OrderSide.ASK
+        }else{
             putOrderInMap(order,asks);
         }
     }
 
-    public void match() {
+    public synchronized void match() {
         while(!asks.isEmpty() && !bids.isEmpty()){
             Limit bestBuyLimit = bids.firstEntry().getValue();
             Limit bestSellLimit = asks.firstEntry().getValue();
@@ -47,21 +50,23 @@ public class TradingEngine {
 
         if (sellOrder.getQuantity() > buyOrder.getQuantity()) {
             sellOrder.decreaseQuantity(buyOrder.getQuantity());
-            sendTrade();
+            sendTrade(buyOrder, sellOrder,buyOrder.getQuantity());
             bestBuyLimit.deleteCurrentOrder();
         } else if (sellOrder.getQuantity() == buyOrder.getQuantity()) {
-            sendTrade();
+            sendTrade(buyOrder, sellOrder, buyOrder.getQuantity());
             bestSellLimit.deleteCurrentOrder();
             bestBuyLimit.deleteCurrentOrder();
         } else {
             buyOrder.decreaseQuantity(sellOrder.getQuantity());
-            sendTrade();
+            sendTrade(buyOrder, sellOrder, sellOrder.getQuantity());
             bestSellLimit.deleteCurrentOrder();
         }
     }
 
-    //TODO Figure out how to send trade report
-    private void sendTrade() {
+    private void sendTrade(Order buyOrder, Order sellOrder, int quantity) {
+        manager.submitTrade(
+                new TradeReport(buyOrder, sellOrder, quantity,(buyOrder.getPrice() + sellOrder.getPrice())/2)
+        );
     }
 
     private static void putOrderInMap(Order order, TreeMap<Integer,Limit> map){

@@ -23,6 +23,9 @@ public class Order implements Serializable {
         this(0,side,stock,quantity,price);
     }
 
+    public void setOrderId(int orderId) {
+        this.orderId = orderId;
+    }
     public int getOrderId() {
         return orderId;
     }

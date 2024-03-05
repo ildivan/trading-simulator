@@ -26,6 +26,9 @@ public class ClientData implements Serializable {
     public int getCash(){
         return cash;
     }
+    public void setCash(int cash) {
+        this.cash = cash;
+    }
 
     public HashMap<Stock, Integer> getWallet() {
         return wallet;

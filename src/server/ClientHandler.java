@@ -34,9 +34,10 @@ public class ClientHandler implements Runnable{
                 Object receivedObject = in.readObject();
 
                 if(receivedObject instanceof Order receivedOrder){
+                    receivedOrder.setOrderId(clientId);
                     System.out.println("ORDER RECEIVED");
-                    if(manager.isOrderValid(clientId, receivedOrder)){
-                        manager.processOrder(clientId, receivedOrder);
+                    if(manager.isOrderValid(receivedOrder)){
+                        manager.processOrder(receivedOrder);
                         synchronized (this){
                             out.writeObject(new OrderAcceptance(receivedOrder));
                         }
@@ -49,6 +50,7 @@ public class ClientHandler implements Runnable{
             }
         } catch (IOException e) {
             System.out.println("CLIENT CLOSED CONNECTION");
+            manager.removeClient(clientId);
         } catch(ClassNotFoundException e){
             System.out.printf("CLIENT HANDLER ERROR: %s\n",e.getMessage());
         }
