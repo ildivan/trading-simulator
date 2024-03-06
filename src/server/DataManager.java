@@ -19,6 +19,17 @@ public class DataManager {
         for (Stock stock : Stock.values()){
             orderbooks.put(stock,new TradingEngine(this));
         }
+
+        Thread processTradesThread = new Thread(
+                () -> {
+                    while(true){
+                        TradeReport tradeToProcess = tradesToProcess.poll();
+                        if(tradeToProcess != null){
+                            processTrade(tradeToProcess);
+                        }
+                    }
+                });
+        processTradesThread.start();
     }
 
     public ClientData getClientData(int clientId){
@@ -55,6 +66,10 @@ public class DataManager {
     }
 
     public synchronized void submitTrade(TradeReport trade){
+        tradesToProcess.add(trade);
+    }
+
+    private void processTrade(TradeReport trade){
         ClientData buyerData = clients.get(trade.buyerOrderId());
         ClientData sellerData = clients.get(trade.sellerOrderId());
 
