@@ -7,6 +7,9 @@ import java.awt.event.MouseListener;
 
 public class ClickableItem extends JPanel implements MouseListener {
 
+    private Color currentBackground;
+    private Cursor currentCursor;
+
     public ClickableItem(){
         super();
         addMouseListener(this);
@@ -14,18 +17,19 @@ public class ClickableItem extends JPanel implements MouseListener {
 
     @Override
     public void mouseEntered(MouseEvent mouseEvent) {
-        if(mouseEvent.getSource() instanceof JPanel clickedItem){
-            clickedItem.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-            clickedItem.setBackground(ClientView.SELECTED_COLOR);
-        }
+        setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        setBackground(ClientView.SELECTED_COLOR);
+        currentBackground = getBackground();
+        currentCursor = getCursor();
     }
+
 
     @Override
     public void mouseExited(MouseEvent mouseEvent) {
-        if(mouseEvent.getSource() instanceof JPanel clickedItem){
-            clickedItem.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-            clickedItem.setBackground(ClientView.CONTENT_BACKGROUND_COLOR);
-        }
+        setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+        setBackground(ClientView.CONTENT_BACKGROUND_COLOR);
+        currentBackground = getBackground();
+        currentCursor = getCursor();
     }
 
     @Override
@@ -42,4 +46,5 @@ public class ClickableItem extends JPanel implements MouseListener {
     public void mouseReleased(MouseEvent mouseEvent) {
 
     }
+
 }

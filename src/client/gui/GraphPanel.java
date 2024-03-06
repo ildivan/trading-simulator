@@ -52,11 +52,14 @@ public class GraphPanel extends JPanel {
     public void paint(Graphics g) {
         super.paint(g);
         Graphics2D g2D = (Graphics2D) g;
+        drawBackGround(g2D);
         g2D.setFont(ClientView.CONTENT_FONT);
         leftHorizontalMargin = calculateLeftHorizontalMargin(g2D);
         setYValues();
         setXValues();
-        drawBackGround(g2D);
+        if(yValues.size() < 2){
+            return;
+        }
         drawGraph(g2D);
         drawPriceLines(g2D);
         drawPrices(g2D);
@@ -85,12 +88,17 @@ public class GraphPanel extends JPanel {
     private void drawPriceLines(Graphics2D g2D){
         g2D.setStroke(new BasicStroke(1));
         g2D.setPaint(Color.WHITE);
-        g2D.drawLine(leftHorizontalMargin, verticalMargin,getWidth()- rightHorizontalMargin, verticalMargin);
-        g2D.drawLine(leftHorizontalMargin,getHeight()- verticalMargin,getWidth()- rightHorizontalMargin,getHeight()- verticalMargin);
-        if(yValues.get(yValues.size()-1) != min && yValues.get(yValues.size()-1) != max){
-            g2D.drawLine(leftHorizontalMargin,(int)Math.floor(yValues.get(yValues.size()-1)),
-                    getWidth()- rightHorizontalMargin,(int)Math.floor(yValues.get(yValues.size()-1)));
+        if(max != min){
+            g2D.drawLine(leftHorizontalMargin, verticalMargin,getWidth()- rightHorizontalMargin, verticalMargin);
+            g2D.drawLine(leftHorizontalMargin,getHeight()- verticalMargin,getWidth()- rightHorizontalMargin,getHeight()- verticalMargin);
+            if(yValues.get(yValues.size()-1) != min && yValues.get(yValues.size()-1) != max){
+                g2D.drawLine(leftHorizontalMargin,(int)Math.floor(yValues.get(yValues.size()-1)),
+                        getWidth()- rightHorizontalMargin,(int)Math.floor(yValues.get(yValues.size()-1)));
+            }
+        }else{
+            g2D.drawLine(leftHorizontalMargin,getHeight()/2,getWidth()- rightHorizontalMargin,getHeight()/2);
         }
+
     }
 
     private void drawPrices(Graphics2D g2D){

@@ -40,11 +40,14 @@ public class ClientController implements ActionListener, MouseListener, WindowLi
         ArrayList<Double> values = new ArrayList<>();
         for (Stock stock : prices.keySet()){
             int price = prices.get(stock);
-            values.add((data.getWallet().get(stock) * price) / 100.0);
+            if(data.getWallet().containsKey(stock)){
+                int quantity = data.getWallet().get(stock);
+                values.add(( quantity * price) / 100.0);
+            }
         }
 
         view.setStocksInWallet(names,quantities,values);
-        view.setCash(data.getCash());
+        view.setCash(data.getCash()/100.0);
     }
 
     public void updateOrders(ClientData data){
