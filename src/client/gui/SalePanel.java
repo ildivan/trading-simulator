@@ -1,5 +1,7 @@
 package client.gui;
 
+import client.ClientView;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeListener;
@@ -10,6 +12,7 @@ import javax.swing.text.DocumentFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 public class SalePanel extends Section implements ActionListener {
     private JRadioButton buyButton;
@@ -229,14 +232,13 @@ public class SalePanel extends Section implements ActionListener {
     public String getSelectedStock(){
         return (String) stockSelection.getSelectedItem();
     }
-    public void setSelectionStocks(String... stocks){
-        stockSelection.removeAllItems();
-        if(stocks.length == 0){
+    public void setSelectionStocks(ArrayList<String> stocks){
+        if(stockSelection.getItemCount() != 0 || stocks.isEmpty()){
             return;
         }
 
-        for(int i = 0; i < stocks.length; i++){
-            stockSelection.insertItemAt(stocks[i],i);
+        for(int i = 0; i < stocks.size(); i++){
+            stockSelection.insertItemAt(stocks.get(i),i);
         }
         stockSelection.setSelectedIndex(0);
     }

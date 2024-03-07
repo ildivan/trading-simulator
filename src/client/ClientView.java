@@ -1,11 +1,10 @@
-package client.gui;
+package client;
 
-import client.ClientController;
+import client.gui.*;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class ClientView extends JFrame {
     public static final Color HEADING_BACKGROUND_COLOR = new Color(0x555557);
@@ -164,6 +163,12 @@ public class ClientView extends JFrame {
     }
 
     public void addOrder(int orderId, String side, String name, int quantity){
+        ArrayList<OrderItem> list = orders.getListOfElements();
+
+        if(list.stream().anyMatch((item) -> item.getOrderId() == orderId)){
+            return;
+        }
+
         OrderItem newItem = new OrderItem(orderId, side, name, quantity);
         newItem.addMouseListener(controller);
         orders.addElementToList(newItem);
@@ -178,20 +183,18 @@ public class ClientView extends JFrame {
         if(nameList.size() != priceList.size() || nameList.size() != risingStatus.size()){
             return;
         }
-        prices.removeAllElements();
-        addStockPrices(nameList,priceList,risingStatus);
-    }
+        sale.setSelectionStocks(nameList);
 
-    public void addStockPrices(ArrayList<String> nameList, ArrayList<Double> priceList, ArrayList<Boolean> risingStatus){
-        if(nameList.size() != priceList.size() || nameList.size() != risingStatus.size()){
-            return;
-        }
-
-        String[] stockNamesCopy = Arrays.copyOf(nameList.toArray(), nameList.size(), String[].class);
-        sale.setSelectionStocks(stockNamesCopy);
-
-        for (int i = 0; i < nameList.size(); i++) {
-            addStockPrice(nameList.get(i),priceList.get(i),risingStatus.get(i));
+        if(prices.getListOfElements().isEmpty()){
+            for (int i = 0; i < nameList.size(); i++) {
+                addStockPrice(nameList.get(i),priceList.get(i),risingStatus.get(i));
+            }
+        }else{
+            for (int i = 0; i < prices.getListOfElements().size(); i++) {
+                PriceItem currentItem = prices.getListOfElements().get(i);
+                currentItem.setPrice(priceList.get(i));
+                currentItem.setRisingStatus(risingStatus.get(i));
+            }
         }
     }
 
@@ -199,9 +202,6 @@ public class ClientView extends JFrame {
         PriceItem newItem = new PriceItem(name,price,isRising);
         newItem.addMouseListener(controller);
         prices.addElementToList(newItem);
-        Object[] stocks = prices.getListOfElements().stream().map(PriceItem::getName).toArray();
-        String[] stocksCopy = Arrays.copyOf(stocks, stocks.length, String[].class);
-        sale.setSelectionStocks(stocksCopy);
     }
 
     public void setGraphPrices(ArrayList<Double> prices){

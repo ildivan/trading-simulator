@@ -5,7 +5,10 @@ import trading.*;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.TreeMap;
+import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class DataManager {
     private volatile HashMap<Integer,ClientData> clients;
@@ -25,16 +28,14 @@ public class DataManager {
         setDefaultPrices();
         setupOrderBooks();
 
-        Thread processTradesThread = new Thread(
+        ScheduledExecutorService processTradesThreadManager = Executors.newSingleThreadScheduledExecutor();
+        processTradesThreadManager.scheduleAtFixedRate(
                 () -> {
-                    while(true){
-                        TradeReport tradeToProcess = tradesToProcess.poll();
-                        if(tradeToProcess != null){
-                            processTrade(tradeToProcess);
-                        }
-                    }
-                });
-        processTradesThread.start();
+                    TradeReport tradeToProcess = tradesToProcess.poll();
+                    if(tradeToProcess != null){
+                        processTrade(tradeToProcess);
+                    }},
+                0, 50, TimeUnit.MILLISECONDS);
     }
 
     private void setDefaultPrices() {

@@ -1,6 +1,8 @@
 package client.gui;
 
 
+import client.ClientView;
+
 import javax.swing.*;
 import java.awt.*;
 

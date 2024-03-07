@@ -3,7 +3,7 @@ package client.gui;
 import javax.swing.*;
 import java.awt.*;
 
-class CustomTabbedPane extends JTabbedPane {
+public class CustomTabbedPane extends JTabbedPane {
     public CustomTabbedPane(int tabPlacement){
         super(tabPlacement);
     }

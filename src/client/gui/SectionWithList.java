@@ -1,5 +1,7 @@
 package client.gui;
 
+import client.ClientView;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicArrowButton;
