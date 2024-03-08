@@ -51,6 +51,30 @@ public class ClientController implements ActionListener, MouseListener, WindowLi
     }
 
     public void updateOrders(ClientData data){
+        ArrayList<Order> orders = data.getOrders();
+        ArrayList<Integer> ids = new ArrayList<>(
+                orders.stream()
+                        .map(Order::getOrderId)
+                        .toList()
+        );
+        ArrayList<String> sides = new ArrayList<>(
+                orders.stream()
+                        .map(Order::getSide)
+                        .map((side) -> side == OrderSide.BID ? "BUY" : "SELL")
+                        .toList()
+        );
+        ArrayList<String> stockNames = new ArrayList<>(
+                orders.stream()
+                        .map(Order::getStock)
+                        .map(Stock::toString)
+                        .toList()
+        );
+        ArrayList<Integer> quantities = new ArrayList<>(
+                orders.stream()
+                        .map(Order::getQuantity)
+                        .toList()
+        );
+        view.setOrders(ids,sides,stockNames,quantities);
     }
 
     public void updatePrices(TreeMap<Stock,ArrayList<Integer>> prices){

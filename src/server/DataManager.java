@@ -15,6 +15,7 @@ public class DataManager {
     private volatile TreeMap<Stock,Integer> prices;
     private LinkedBlockingDeque<TradeReport> tradesToProcess;
     private TreeMap<Stock, TradingEngine> orderbooks;
+    private volatile int orderCounter;
     private static final int RANGE_STARTING_PRICE = 100001;
     private static final int BASE_STARTING_PRICE = 1000;
     private static final int STARTING_CASH = 200000;
@@ -24,6 +25,7 @@ public class DataManager {
         prices = new TreeMap<>();
         orderbooks = new TreeMap<>();
         tradesToProcess = new LinkedBlockingDeque<>();
+        orderCounter = 0;
 
         setDefaultPrices();
         setupOrderBooks();
@@ -68,8 +70,8 @@ public class DataManager {
         clients.remove(clientId);
     }
 
-    public synchronized boolean isOrderValid(Order order){
-        ClientData data = clients.get(order.getOrderId());
+    public boolean isOrderValid(int clientId, Order order){
+        ClientData data = clients.get(clientId);
         if(order.getSide() == OrderSide.BID){
             int totalPrice = order.getQuantity() * prices.get(order.getStock());
             return totalPrice <= data.getCash();
@@ -78,7 +80,10 @@ public class DataManager {
         }
     }
 
-    public synchronized void processOrder(Order order){
+    public synchronized void processOrder(int clientId, Order order){
+        orderCounter += 1;
+        order.setOrderId(orderCounter);
+        clients.get(clientId).getOrders().add(order);
         TradingEngine orderbook = orderbooks.get(order.getStock());
         orderbook.insertOrder(order);
         Thread matchingThread = new Thread(orderbook::match);

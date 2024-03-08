@@ -145,30 +145,17 @@ public class ClientView extends JFrame {
                 nameList.size() != quantityList.size()){
             return;
         }
-        orders.removeAllElements();
-        addOrders(orderIdList,orderSideList,nameList,quantityList);
-    }
 
-    public void addOrders
-            (ArrayList<Integer> orderIdList,ArrayList<String> orderSideList,
-             ArrayList<String> nameList , ArrayList<Integer> quantityList){
-        if(orderSideList.size() != nameList.size() ||
-                nameList.size() != quantityList.size()){
-            return;
-        }
-
+        ArrayList<Integer> orderIds = new ArrayList<>(orders.getListOfElements().stream().map(OrderItem::getOrderId).toList());
         for (int i = 0; i < nameList.size(); i++) {
-            addOrder(orderIdList.get(i),orderSideList.get(i),nameList.get(i),quantityList.get(i));
+            if(!orderIds.contains(orderIdList.get(i))){
+                addOrder(orderIdList.get(i),orderSideList.get(i),nameList.get(i),quantityList.get(i));
+            }
         }
     }
 
     public void addOrder(int orderId, String side, String name, int quantity){
         ArrayList<OrderItem> list = orders.getListOfElements();
-
-        if(list.stream().anyMatch((item) -> item.getOrderId() == orderId)){
-            return;
-        }
-
         OrderItem newItem = new OrderItem(orderId, side, name, quantity);
         newItem.addMouseListener(controller);
         orders.addElementToList(newItem);

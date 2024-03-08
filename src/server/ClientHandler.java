@@ -1,8 +1,6 @@
 package server;
 
 import trading.Order;
-import trading.OrderAcceptance;
-import trading.OrderRejection;
 import trading.Stock;
 
 import java.io.IOException;
@@ -34,17 +32,8 @@ public class ClientHandler implements Runnable{
                 Object receivedObject = in.readObject();
 
                 if(receivedObject instanceof Order receivedOrder){
-                    receivedOrder.setOrderId(clientId);
-                    System.out.println("ORDER RECEIVED");
-                    if(manager.isOrderValid(receivedOrder)){
-                        manager.processOrder(receivedOrder);
-                        synchronized (this){
-                            out.writeObject(new OrderAcceptance(receivedOrder));
-                        }
-                    }else{
-                        synchronized (this){
-                            out.writeObject(new OrderRejection(receivedOrder));
-                        }
+                    if(manager.isOrderValid(clientId,receivedOrder)){
+                        manager.processOrder(clientId,receivedOrder);
                     }
                 }
             }
