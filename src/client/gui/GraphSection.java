@@ -6,7 +6,9 @@ import java.util.ArrayList;
 public class GraphSection extends Section{
     public GraphSection(String title, ArrayList<Double> prices) {
         super(title);
-        setGraph(prices);
+        remove(content);
+        content = new GraphPanel(prices, 20,20);
+        add(content, BorderLayout.CENTER);
     }
 
     public GraphSection(String title) {
@@ -14,11 +16,8 @@ public class GraphSection extends Section{
     }
 
     public void setGraph(ArrayList<Double> prices){
-        if(prices.size() < 2) {
-            return;
+        if(content instanceof GraphPanel graph){
+            graph.setNewGraph(prices);
         }
-        remove(content);
-        content = new GraphPanel(prices, 20,20);
-        add(content, BorderLayout.CENTER);
     }
 }

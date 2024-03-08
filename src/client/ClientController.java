@@ -112,6 +112,7 @@ public class ClientController implements ActionListener, MouseListener, WindowLi
 
     @Override
     public void mouseClicked(MouseEvent mouseEvent) {
+        System.out.println("CLICKED");
         if(mouseEvent.getSource() instanceof ClickableItem clickedItem){
             handleItemClick(clickedItem);
         }
@@ -127,7 +128,7 @@ public class ClientController implements ActionListener, MouseListener, WindowLi
 
     }
 
-    public void handleItemClick(JPanel clickedItem){
+    public void handleItemClick(ClickableItem clickedItem){
         if(clickedItem instanceof PriceItem priceItem){
             String stockName = priceItem.getName();
             try{

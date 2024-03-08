@@ -21,8 +21,12 @@ public class GraphPanel extends JPanel {
         this.values = values;
         this.verticalMargin = verticalMargin;
         this.rightHorizontalMargin = rightHorizontalMargin;
-        this.max = Collections.max(this.values);
-        this.min = Collections.min(this.values);
+        System.out.println("ENTERED");
+    }
+
+    public void setNewGraph(ArrayList<Double> values){
+        this.values = values;
+        repaint();
     }
 
     private void setYValues() {
@@ -56,12 +60,14 @@ public class GraphPanel extends JPanel {
         Graphics2D g2D = (Graphics2D) g;
         drawBackGround(g2D);
         g2D.setFont(ClientView.CONTENT_FONT);
+        if(values.size() < 2){
+            return;
+        }
+        max = Collections.max(values);
+        min = Collections.min(values);
         leftHorizontalMargin = calculateLeftHorizontalMargin(g2D);
         setYValues();
         setXValues();
-        if(yValues.size() < 2){
-            return;
-        }
         drawGraph(g2D);
         drawPriceLines(g2D);
         drawPrices(g2D);
