@@ -21,7 +21,6 @@ public class GraphPanel extends JPanel {
         this.values = values;
         this.verticalMargin = verticalMargin;
         this.rightHorizontalMargin = rightHorizontalMargin;
-        System.out.println("ENTERED");
     }
 
     public void setNewGraph(ArrayList<Double> values){
@@ -86,22 +85,29 @@ public class GraphPanel extends JPanel {
     }
 
     private void drawGraph(Graphics2D g2D) {
-        g2D.setPaint((values.get(0) <= values.get(values.size()-1) ? Color.GREEN : Color.RED));
-        g2D.setStroke(new BasicStroke(2));
-        for (int i = 0; i < xValues.size()-1; i++) {
-            g2D.drawLine(xValues.get(i),(int)Math.floor(yValues.get(i)),xValues.get(i+1),(int)Math.floor(yValues.get(i+1)));
+        if(max != min){
+            g2D.setPaint((values.get(0) <= values.get(values.size()-1) ? Color.GREEN : Color.RED));
+            g2D.setStroke(new BasicStroke(2));
+            for (int i = 0; i < xValues.size()-1; i++) {
+                g2D.drawLine(xValues.get(i),(int)Math.floor(yValues.get(i)),xValues.get(i+1),(int)Math.floor(yValues.get(i+1)));
+            }
         }
     }
 
     private void drawPriceLines(Graphics2D g2D){
         g2D.setStroke(new BasicStroke(1));
         g2D.setPaint(Color.WHITE);
+
         if(max != min){
             g2D.drawLine(leftHorizontalMargin, verticalMargin,getWidth()- rightHorizontalMargin, verticalMargin);
             g2D.drawLine(leftHorizontalMargin,getHeight()- verticalMargin,getWidth()- rightHorizontalMargin,getHeight()- verticalMargin);
-            if(yValues.get(yValues.size()-1) != min && yValues.get(yValues.size()-1) != max){
-                g2D.drawLine(leftHorizontalMargin,(int)Math.floor(yValues.get(yValues.size()-1)),
-                        getWidth()- rightHorizontalMargin,(int)Math.floor(yValues.get(yValues.size()-1)));
+
+            double minYValue = getHeight() - verticalMargin + ClientView.CONTENT_FONT.getSize()/2.0;
+            double maxYValue = verticalMargin + ClientView.CONTENT_FONT.getSize()/2.0;
+            double lastYValue = yValues.get(yValues.size()-1);
+            if(Math.abs(lastYValue - minYValue) > 5 && Math.abs(lastYValue - maxYValue) > 5){
+                g2D.drawLine(leftHorizontalMargin,(int)Math.floor(lastYValue),
+                        getWidth()- rightHorizontalMargin,(int)Math.floor(lastYValue));
             }
         }else{
             g2D.drawLine(leftHorizontalMargin,getHeight()/2,getWidth()- rightHorizontalMargin,getHeight()/2);
@@ -117,11 +123,18 @@ public class GraphPanel extends JPanel {
         String minValueString = formatToPrintOnScreen(min);
         String lastValueString = formatToPrintOnScreen(lastPrice);
 
-        g2D.drawString(maxValueString,5,verticalMargin + ClientView.CONTENT_FONT.getSize()/2);
-        g2D.drawString(minValueString,5,getHeight() - verticalMargin + ClientView.CONTENT_FONT.getSize()/2);
+        if(max != min){
+            g2D.drawString(maxValueString,5,verticalMargin + ClientView.CONTENT_FONT.getSize()/2);
+            g2D.drawString(minValueString,5,getHeight() - verticalMargin + ClientView.CONTENT_FONT.getSize()/2);
 
-        if(lastPrice != min && lastPrice != max){
-            g2D.drawString(lastValueString,5,lastPriceConverted + ClientView.CONTENT_FONT.getSize()/2);
+            double minYValue = getHeight() - verticalMargin + ClientView.CONTENT_FONT.getSize()/2.0;
+            double maxYValue = verticalMargin + ClientView.CONTENT_FONT.getSize()/2.0;
+            double lastYValue = yValues.get(yValues.size()-1);
+            if(Math.abs(lastYValue - minYValue) > 5 && Math.abs(lastYValue - maxYValue) > 5){
+                g2D.drawString(lastValueString,5,lastPriceConverted + ClientView.CONTENT_FONT.getSize()/2);
+            }
+        }else{
+            g2D.drawString(minValueString,5,getHeight()/2 + ClientView.CONTENT_FONT.getSize()/2);
         }
     }
 
