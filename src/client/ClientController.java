@@ -182,7 +182,7 @@ public class ClientController implements ActionListener, MouseListener, WindowLi
                 order.getStock().toString(),
                 order.getQuantity(),
                 order.getPrice(),
-                model.getStatus(order).toString()
+                order.getStatus().toString()
         );
     }
 

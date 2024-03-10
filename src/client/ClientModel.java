@@ -135,9 +135,6 @@ public class ClientModel {
         throw new OrderNotFoundException(orderId);
     }
 
-    public OrderStatus getStatus(Order order){
-        return OrderStatus.ACCEPTED;
-    }
 
     public ArrayList<Integer> getPrices(Stock stock){
         return prices.get(stock);

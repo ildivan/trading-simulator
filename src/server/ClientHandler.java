@@ -32,9 +32,7 @@ public class ClientHandler implements Runnable{
                 Object receivedObject = in.readObject();
 
                 if(receivedObject instanceof Order receivedOrder){
-                    if(manager.isOrderValid(clientId,receivedOrder)){
-                        manager.processOrder(clientId,receivedOrder);
-                    }
+                    manager.processOrder(clientId,receivedOrder);
                 }
             }
         } catch (IOException e) {

@@ -10,6 +10,7 @@ public class Order implements Serializable {
     private Stock stock;
     private int quantity;
     private int price;
+    private OrderStatus status;
 
     public Order(int orderId, OrderSide side,  Stock stock, int quantity, int price) {
         this.orderId = orderId;
@@ -17,6 +18,7 @@ public class Order implements Serializable {
         this.stock = stock;
         this.quantity = quantity;
         this.price = price;
+        status = OrderStatus.PENDING;
     }
 
     public Order(OrderSide side,  Stock stock, int quantity, int price) {
@@ -50,5 +52,13 @@ public class Order implements Serializable {
 
     public int getPrice() {
         return price;
+    }
+
+    public OrderStatus getStatus(){
+        return status;
+    }
+
+    public void setStatus(OrderStatus status){
+        this.status = status;
     }
 }

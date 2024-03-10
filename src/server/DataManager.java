@@ -77,7 +77,8 @@ public class DataManager {
             int totalPrice = order.getQuantity() * prices.get(order.getStock());
             return totalPrice <= data.getCash();
         }else{
-            return order.getQuantity() <= data.getWallet().get(order.getStock());
+            Integer actualQuantity = data.getWallet().get(order.getStock());
+            return order.getQuantity() <= (actualQuantity == null ? 0 : actualQuantity);
         }
     }
 
@@ -86,7 +87,14 @@ public class DataManager {
         order.setOrderId(orderCounter);
         ClientData data = clients.get(clientId);
         ArrayList<Order> orders = data.getOrders();
+        order.setStatus(OrderStatus.ACCEPTED);
         orders.add(order);
+
+        if(!isOrderValid(clientId,order)){
+            order.setStatus(OrderStatus.REJECTED);
+            return;
+        }
+
         TradingEngine orderbook = orderbooks.get(order.getStock());
         orderbook.insertOrder(order);
         Thread matchingThread = new Thread(orderbook::match);
