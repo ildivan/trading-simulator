@@ -17,7 +17,7 @@ public class CommunicationServer {
     private final ExecutorService clientsThreadManager;
     private final ScheduledExecutorService dataSender;
     private final AtomicInteger clientIdCounter;
-    private static final int DELAY = 1;
+    private static final int DELAY = 5;
 
     public CommunicationServer(DataManager manager){
         this.manager = manager;
@@ -31,11 +31,8 @@ public class CommunicationServer {
         dataSender.scheduleAtFixedRate(this::sendDataToAllClients, 0, DELAY, TimeUnit.SECONDS);
 
         try(ServerSocket serverSocket = new ServerSocket(12345)){
-            System.out.println("Server in attesa di connessioni...");
-
             while (true) {
                 Socket socket = serverSocket.accept();
-                System.out.println("Connessione accettata.");
                 clientIdCounter.addAndGet(1);
                 manager.addClient(clientIdCounter.get());
                 ClientHandler clientHandler = new ClientHandler(clientIdCounter.get(),socket, manager);
@@ -54,11 +51,9 @@ public class CommunicationServer {
         handlers.removeIf(
                 (handler) -> {
                     try{
-                        System.out.println("SENDING DATA");
                         handler.sendData();
                         return false;
                     }catch(IOException e){
-                        System.out.println("DELETING CLIENT HANDLER");
                         return true;
                     }
                 }

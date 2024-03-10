@@ -1,6 +1,8 @@
 package trading;
 
-public enum OrderSide {
+import java.io.Serializable;
+
+public enum OrderSide implements Serializable {
     BID,
     ASK
 }

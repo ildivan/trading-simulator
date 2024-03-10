@@ -2,6 +2,7 @@ package server;
 
 import trading.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.TreeMap;
@@ -11,8 +12,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class DataManager {
-    private volatile HashMap<Integer,ClientData> clients;
-    private volatile TreeMap<Stock,Integer> prices;
+    private HashMap<Integer,ClientData> clients;
+    private TreeMap<Stock,Integer> prices;
     private LinkedBlockingDeque<TradeReport> tradesToProcess;
     private TreeMap<Stock, TradingEngine> orderbooks;
     private volatile int orderCounter;
@@ -37,7 +38,7 @@ public class DataManager {
                     if(tradeToProcess != null){
                         processTrade(tradeToProcess);
                     }},
-                0, 50, TimeUnit.MILLISECONDS);
+                0, 100, TimeUnit.MILLISECONDS);
     }
 
     private void setDefaultPrices() {
@@ -83,7 +84,9 @@ public class DataManager {
     public synchronized void processOrder(int clientId, Order order){
         orderCounter += 1;
         order.setOrderId(orderCounter);
-        clients.get(clientId).getOrders().add(order);
+        ClientData data = clients.get(clientId);
+        ArrayList<Order> orders = data.getOrders();
+        orders.add(order);
         TradingEngine orderbook = orderbooks.get(order.getStock());
         orderbook.insertOrder(order);
         Thread matchingThread = new Thread(orderbook::match);

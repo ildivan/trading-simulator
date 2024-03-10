@@ -45,9 +45,10 @@ public class ClientController implements ActionListener, MouseListener, WindowLi
                 values.add(( quantity * price) / 100.0);
             }
         }
-
-        view.setStocksInWallet(names,quantities,values);
-        view.setCash(data.getCash()/100.0);
+        SwingUtilities.invokeLater(() -> {
+            view.setStocksInWallet(names,quantities,values);
+            view.setCash(data.getCash()/100.0);
+        });
     }
 
     public void updateOrders(ClientData data){
@@ -74,7 +75,9 @@ public class ClientController implements ActionListener, MouseListener, WindowLi
                         .map(Order::getQuantity)
                         .toList()
         );
-        view.setOrders(ids,sides,stockNames,quantities);
+        SwingUtilities.invokeLater(() -> {
+            view.setOrders(ids,sides,stockNames,quantities);
+        });
     }
 
     public void updatePrices(TreeMap<Stock,ArrayList<Integer>> prices){
@@ -94,8 +97,9 @@ public class ClientController implements ActionListener, MouseListener, WindowLi
                         .map((list) -> list.get(0) <= list.get(list.size()-1))
                         .toList()
         );
-
-        view.setStockPrices(names, values, risingStatusList);
+        SwingUtilities.invokeLater(() -> {
+            view.setStockPrices(names, values, risingStatusList);
+        });
     }
 
     private ArrayList<String> getStockNames(TreeMap<Stock,?> prices){
@@ -158,7 +162,9 @@ public class ClientController implements ActionListener, MouseListener, WindowLi
                 Stock stock = Stock.find(stockName);
                 ArrayList<Integer> pricesInCents = model.getPrices(stock);
                 ArrayList<Double> prices = new ArrayList<>(pricesInCents.stream().map((v) -> v/100.0).toList());
-                view.setGraphPrices(prices);
+                SwingUtilities.invokeLater(() -> {
+                    view.setGraphPrices(prices);
+                });
             }catch(Exception ignored){}
         }else if(clickedItem instanceof OrderItem orderItem){
             int orderId = orderItem.getOrderId();

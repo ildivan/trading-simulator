@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ClientData implements Serializable {
-    private Integer cash;
+    private int cash;
     private HashMap<Stock,Integer> wallet;
     private ArrayList<Order> orders;
 
@@ -18,9 +18,10 @@ public class ClientData implements Serializable {
         orders = new ArrayList<>();
     }
 
-    public ClientData(int cash, HashMap<Stock,Integer> wallet, ArrayList<Order> orders){
-        this.wallet = wallet;
-        this.orders = orders;
+    public ClientData(ClientData toCopy){
+        cash = toCopy.getCash();
+        wallet = new HashMap<>(toCopy.getWallet());
+        orders = new ArrayList<>(toCopy.getOrders());
     }
 
     public int getCash(){

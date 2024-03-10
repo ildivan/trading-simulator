@@ -6,24 +6,40 @@ import javax.swing.*;
 import java.awt.*;
 
 public class OrderStatusPanel extends Section {
+    private JLabel orderIdLabel;
+    private JLabel orderSideLabel;
+    private JLabel stockLabel;
+    private JLabel quantityLabel;
+    private JLabel priceLabel;
+    private JLabel statusLabel;
+
     public OrderStatusPanel() {
         super("ORDER");
         content.setLayout(new GridLayout(6,1));
+        orderIdLabel = new JLabel();
+        orderSideLabel = new JLabel();
+        stockLabel = new JLabel();
+        quantityLabel = new JLabel();
+        priceLabel = new JLabel();
+        statusLabel = new JLabel();
+        setupLabel(orderIdLabel);
+        setupLabel(orderSideLabel);
+        setupLabel(stockLabel);
+        setupLabel(quantityLabel);
+        setupLabel(priceLabel);
+        setupLabel(statusLabel);
     }
 
     public void setOrder(int orderId, String orderSide, String stock, int quantity, double price, String status){
-        content.removeAll();
-        content.add(getRow("Order number: " + orderId));
-        content.add(getRow("Type of order: " + orderSide));
-        content.add(getRow("Stock: " + stock));
-        content.add(getRow("Quantity: " + quantity));
-        content.add(getRow("Price: " + price));
-        content.add(getRow("Order status: " + status));
+        orderIdLabel.setText("Order number: " + orderId);
+        orderSideLabel.setText("Order type: " + orderSide);
+        stockLabel.setText("Stock: " + stock);
+        quantityLabel.setText("Quantity: " + quantity);
+        priceLabel.setText("Price : " + price);
+        statusLabel.setText("Order status: " + status);
     }
 
-    private JPanel getRow(String text){
-        JLabel label = new JLabel();
-        label.setText(text);
+    private void setupLabel(JLabel label){
         label.setFont(ClientView.CONTENT_FONT);
         label.setForeground(ClientView.FONT_COLOR);
 
@@ -34,6 +50,6 @@ public class OrderStatusPanel extends Section {
         row.add(label);
         row.add(Box.createGlue());
 
-        return row;
+        content.add(row);
     }
 }

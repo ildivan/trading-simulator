@@ -79,19 +79,14 @@ public class ClientModel {
 
     private void handleReceive() {
         try{
-            Object received;
-            received = in.readObject();
-            if(received  instanceof OrderAcceptance acceptance){
-
-            }else if(received instanceof OrderRejection rejection){
-
-            }else if(received instanceof ClientData receivedData){
+            Object received = in.readObject();
+            if(received instanceof ClientData receivedData){
                 data = receivedData;
                 updateClientData();
             }else if(received instanceof TreeMap<?,?> receivedPrices){
                 @SuppressWarnings("unchecked")
-                TreeMap<Stock, Integer> castedPrices = (TreeMap<Stock, Integer>) receivedPrices;
-                updatePrices(castedPrices);
+                TreeMap<Stock, Integer> prices = (TreeMap<Stock, Integer>) receivedPrices;
+                updatePrices(prices);
             }
         }catch(IOException | ClassNotFoundException ignored){}
     }

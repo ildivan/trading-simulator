@@ -38,7 +38,6 @@ public class ClientHandler implements Runnable{
                 }
             }
         } catch (IOException e) {
-            System.out.println("CLIENT CLOSED CONNECTION");
             manager.removeClient(clientId);
         } catch(ClassNotFoundException e){
             System.out.printf("CLIENT HANDLER ERROR: %s\n",e.getMessage());
@@ -49,12 +48,14 @@ public class ClientHandler implements Runnable{
         ClientData clientData = manager.getClientData(clientId);
         if(clientData != null){
             synchronized (this){
-                out.writeObject(clientData);
+                out.writeObject(new ClientData(clientData));
+                out.flush();
             }
         }
         TreeMap<Stock,Integer> prices = manager.getPrices();
         synchronized (this){
-            out.writeObject(prices);
+            out.writeObject(new TreeMap<>(prices));
+            out.flush();
         }
     }
 }
