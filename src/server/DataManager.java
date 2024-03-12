@@ -65,6 +65,13 @@ public class DataManager {
     public synchronized void addClient(int clientId) {
         clients.put(clientId, new ClientData());
         clients.get(clientId).setCash(STARTING_CASH);
+        setDefaultStocks(clientId);
+    }
+
+    private void setDefaultStocks(int clientId) {
+        for (Stock stock : Stock.values()){
+            clients.get(clientId).getWallet().put(stock,1);
+        }
     }
 
     public synchronized void removeClient(int clientId){

@@ -248,6 +248,6 @@ public class SalePanel extends Section implements ActionListener {
     }
 
     public int getPrice(){
-        return (priceField.getText().isBlank() ? 0 : Integer.parseInt(quantityField.getText()));
+        return (priceField.getText().isBlank() ? 0 : Integer.parseInt(priceField.getText()));
     }
 }

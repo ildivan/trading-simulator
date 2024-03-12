@@ -31,9 +31,11 @@ public class ClientView extends JFrame {
         setSize(new Dimension(minimumWidth + 100,minimumHeight + 100));
         setMinimumSize(new Dimension(minimumWidth,minimumHeight));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setupTabs();
-        setProfileTab();
-        setMarketTab();
+        SwingUtilities.invokeLater(() -> {
+            setupTabs();
+            setProfileTab();
+            setMarketTab();
+        });
         setVisible(true);
         addWindowListener(controller);
     }
@@ -113,29 +115,32 @@ public class ClientView extends JFrame {
     }
 
     public void setCash(double cash){
-        cashLabel.setText(String.format("CASH: %.2f$",cash));
+        SwingUtilities.invokeLater(() -> cashLabel.setText(String.format("CASH: %.2f$",cash)));
     }
 
     public void setStocksInWallet(ArrayList<String> nameList, ArrayList<Integer> quantityList, ArrayList<Double> valueList){
         if(nameList.size() != quantityList.size() || nameList.size() != valueList.size()){
             return;
         }
-        wallet.removeAllElements();
-        addStocksToWallet(nameList,quantityList,valueList);
-    }
 
-    public void addStocksToWallet(ArrayList<String> nameList, ArrayList<Integer> quantityList, ArrayList<Double> valueList){
-        if(nameList.size() != quantityList.size() || nameList.size() != valueList.size()){
-            return;
+        if(wallet.getListOfElements().isEmpty()){
+            for (int i = 0; i < nameList.size(); i++) {
+                addStockToWallet(nameList.get(i),quantityList.get(i),valueList.get(i));
+            }
+        }else{
+            for (int i = 0; i < wallet.getListOfElements().size(); i++) {
+                if(quantityList.get(i) > 0){
+                    WalletItem currentItem = wallet.getListOfElements().get(i);
+                    currentItem.setQuantity(quantityList.get(i));
+                    currentItem.setValue(valueList.get(i));
+                }
+            }
         }
-
-        for (int i = 0; i < nameList.size(); i++) {
-            addStockToWallet(nameList.get(i),quantityList.get(i),valueList.get(i));
-        }
+        getContentPane().repaint();
     }
 
     public void addStockToWallet(String name, int quantity, double value){
-        wallet.addElementToList(new WalletItem(name,quantity,value));
+        SwingUtilities.invokeLater(() -> wallet.addElementToList(new WalletItem(name,quantity,value)));
     }
 
     public void setOrders
@@ -152,25 +157,25 @@ public class ClientView extends JFrame {
                 addOrder(orderIdList.get(i),orderSideList.get(i),nameList.get(i),quantityList.get(i));
             }
         }
+        getContentPane().repaint();
     }
 
     public void addOrder(int orderId, String side, String name, int quantity){
-        ArrayList<OrderItem> list = orders.getListOfElements();
         OrderItem newItem = new OrderItem(orderId, side, name, quantity);
         newItem.addMouseListener(controller);
-        orders.addElementToList(newItem);
+        SwingUtilities.invokeLater(() -> orders.addElementToList(newItem));
     }
 
     public void setOrderStatus(int orderId, String orderSide,
                                String stock, int quantity, double price, String status){
-        orderStatus.setOrder(orderId, orderSide, stock, quantity, price, status);
+        SwingUtilities.invokeLater(() -> orderStatus.setOrder(orderId, orderSide, stock, quantity, price, status));
     }
 
     public void setStockPrices(ArrayList<String> nameList, ArrayList<Double> priceList, ArrayList<Boolean> risingStatus){
         if(nameList.size() != priceList.size() || nameList.size() != risingStatus.size()){
             return;
         }
-        sale.setSelectionStocks(nameList);
+        SwingUtilities.invokeLater(() -> sale.setSelectionStocks(nameList));
 
         if(prices.getListOfElements().isEmpty()){
             for (int i = 0; i < nameList.size(); i++) {
@@ -183,16 +188,17 @@ public class ClientView extends JFrame {
                 currentItem.setRisingStatus(risingStatus.get(i));
             }
         }
+        getContentPane().repaint();
     }
 
     public void addStockPrice(String name, double price, boolean isRising){
         PriceItem newItem = new PriceItem(name,price,isRising);
         newItem.addMouseListener(controller);
-        prices.addElementToList(newItem);
+        SwingUtilities.invokeLater(() -> prices.addElementToList(newItem));
     }
 
     public void setGraphPrices(ArrayList<Double> prices){
-        graph.setGraph(prices);
+        SwingUtilities.invokeLater(() -> graph.setGraph(prices));
     }
 
     public SalePanel getSalePanel(){

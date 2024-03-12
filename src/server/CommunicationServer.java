@@ -17,7 +17,7 @@ public class CommunicationServer {
     private final ExecutorService clientsThreadManager;
     private final ScheduledExecutorService dataSender;
     private final AtomicInteger clientIdCounter;
-    private static final int DELAY = 1;
+    private static final int DELAY = 5;
 
     public CommunicationServer(DataManager manager){
         this.manager = manager;

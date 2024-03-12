@@ -16,6 +16,7 @@ public class ClientModel {
     private ClientController controller;
     private ClientData data;
     private TreeMap<Stock,ArrayList<Integer>> prices;
+    private Stock selectedStock;
     private AtomicBoolean isRunning;
     private Socket socket;
     private ObjectOutputStream out;
@@ -123,7 +124,7 @@ public class ClientModel {
             }
         }
 
-        controller.updatePrices(prices);
+        controller.updatePrices(prices,selectedStock);
     }
 
     public Order getOrderFromId(int orderId) throws OrderNotFoundException {
@@ -138,5 +139,8 @@ public class ClientModel {
 
     public ArrayList<Integer> getPrices(Stock stock){
         return prices.get(stock);
+    }
+    public void setSelectedStock(Stock stock){
+        selectedStock = stock;
     }
 }

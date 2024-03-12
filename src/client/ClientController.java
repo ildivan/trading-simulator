@@ -47,6 +47,9 @@ public class ClientController implements ActionListener, MouseListener, WindowLi
         }
         SwingUtilities.invokeLater(() -> {
             view.setStocksInWallet(names,quantities,values);
+
+        });
+        SwingUtilities.invokeLater(() -> {
             view.setCash(data.getCash()/100.0);
         });
     }
@@ -80,7 +83,7 @@ public class ClientController implements ActionListener, MouseListener, WindowLi
         });
     }
 
-    public void updatePrices(TreeMap<Stock,ArrayList<Integer>> prices){
+    public void updatePrices(TreeMap<Stock,ArrayList<Integer>> prices, Stock selectedStock){
         ArrayList<String> names = getStockNames(prices);
 
         ArrayList<Double> values = new ArrayList<>(
@@ -97,6 +100,18 @@ public class ClientController implements ActionListener, MouseListener, WindowLi
                         .map((list) -> list.get(0) <= list.get(list.size()-1))
                         .toList()
         );
+        if(selectedStock != null){
+            ArrayList<Integer> integerPrices = prices.get(selectedStock);
+            ArrayList<Double> graphPrices = new ArrayList<>(
+                    integerPrices.stream()
+                            .map((v) -> v/100.0)
+                            .toList()
+            );
+            SwingUtilities.invokeLater(() -> {
+                view.setGraphPrices(graphPrices);
+            });
+        }
+
         SwingUtilities.invokeLater(() -> {
             view.setStockPrices(names, values, risingStatusList);
         });
@@ -122,7 +137,7 @@ public class ClientController implements ActionListener, MouseListener, WindowLi
                 OrderSide side = sale.isSetToBuy() ? OrderSide.BID : OrderSide.ASK;
                 Stock stock = Stock.find(sale.getSelectedStock());
                 int quantity = sale.getQuantity();
-                int price = sale.getPrice();
+                int price = sale.getPrice() * 100;
                 if(quantity != 0 && price != 0){
                     model.sendOrder(side,stock,quantity,price);
                 }
@@ -160,6 +175,7 @@ public class ClientController implements ActionListener, MouseListener, WindowLi
             String stockName = priceItem.getName();
             try{
                 Stock stock = Stock.find(stockName);
+                model.setSelectedStock(stock);
                 ArrayList<Integer> pricesInCents = model.getPrices(stock);
                 ArrayList<Double> prices = new ArrayList<>(pricesInCents.stream().map((v) -> v/100.0).toList());
                 SwingUtilities.invokeLater(() -> {
