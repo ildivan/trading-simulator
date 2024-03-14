@@ -49,16 +49,23 @@ public class TradingEngine {
         Order sellOrder = bestSellLimit.getCurrentOrder();
 
         if (sellOrder.getQuantity() > buyOrder.getQuantity()) {
+            int tradeQuantity = buyOrder.getQuantity();
             sellOrder.decreaseQuantity(buyOrder.getQuantity());
-            sendTrade(buyOrder, sellOrder,buyOrder.getQuantity());
+            buyOrder.decreaseQuantity(buyOrder.getQuantity()); //sets quantity to 0
+            sendTrade(buyOrder, sellOrder,tradeQuantity);
             bestBuyLimit.deleteCurrentOrder();
         } else if (sellOrder.getQuantity() == buyOrder.getQuantity()) {
-            sendTrade(buyOrder, sellOrder, buyOrder.getQuantity());
+            int tradeQuantity = buyOrder.getQuantity();
+            buyOrder.decreaseQuantity(buyOrder.getQuantity()); //sets quantity to 0
+            sellOrder.decreaseQuantity(sellOrder.getQuantity()); //sets quantity to 0
+            sendTrade(buyOrder, sellOrder, tradeQuantity);
             bestSellLimit.deleteCurrentOrder();
             bestBuyLimit.deleteCurrentOrder();
         } else {
+            int tradeQuantity = sellOrder.getQuantity();
             buyOrder.decreaseQuantity(sellOrder.getQuantity());
-            sendTrade(buyOrder, sellOrder, sellOrder.getQuantity());
+            sellOrder.decreaseQuantity(sellOrder.getQuantity()); //sets quantity to 0
+            sendTrade(buyOrder, sellOrder, tradeQuantity);
             bestSellLimit.deleteCurrentOrder();
         }
     }

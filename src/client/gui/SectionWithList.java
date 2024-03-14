@@ -8,6 +8,7 @@ import javax.swing.plaf.basic.BasicArrowButton;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.function.Predicate;
 
 public class SectionWithList<T extends JPanel> extends Section{
 
@@ -69,11 +70,19 @@ public class SectionWithList<T extends JPanel> extends Section{
     }
 
     public void removeAllElements(){
-        for(T element : getListOfElements())
-        {
+        for(T element : getListOfElements()) {
             getContent().remove(element);
         }
         getListOfElements().clear();
+    }
+
+    public void removeIf(Predicate<T> condition){
+        for(T element : getListOfElements()) {
+            if(condition.test(element)){
+                getContent().remove(element);
+            }
+        }
+        getListOfElements().removeIf(condition);
     }
 
     public ArrayList<T> getListOfElements() {

@@ -1,6 +1,7 @@
 package server;
 
 import exceptions.ClientNotFoundException;
+import exceptions.OrderNotFoundException;
 import trading.*;
 
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ public class DataManager {
     private LinkedBlockingDeque<TradeReport> tradesToProcess;
     private TreeMap<Stock, TradingEngine> orderbooks;
     private volatile int orderCounter;
-    private static final int RANGE_STARTING_PRICE = 100001;
+    private static final int RANGE_STARTING_PRICE = 30001;
     private static final int BASE_STARTING_PRICE = 1000;
     private static final int STARTING_CASH = 200000;
 
@@ -71,7 +72,7 @@ public class DataManager {
 
     private void setDefaultStocks(int clientId) {
         for (Stock stock : Stock.values()){
-            clients.get(clientId).getWallet().put(stock,1);
+            clients.get(clientId).getWallet().put(stock,2);
         }
     }
 
@@ -83,11 +84,32 @@ public class DataManager {
         ClientData data = clients.get(clientId);
         if(order.getSide() == OrderSide.BID){
             int totalPrice = order.getQuantity() * prices.get(order.getStock());
-            return totalPrice <= data.getCash();
+            return totalPrice <= getAvailableCash(clientId);
         }else{
-            Integer actualQuantity = data.getWallet().get(order.getStock());
-            return order.getQuantity() <= (actualQuantity == null ? 0 : actualQuantity);
+            return order.getQuantity() <= getAvailableQuantity(clientId,order.getStock());
         }
+    }
+
+    private int getAvailableCash(int clientId){
+        ClientData data = clients.get(clientId);
+        int availableCash = data.getCash();
+        for(Order order : data.getOrders()){
+            if(order.getSide() == OrderSide.BID && order.getStatus() == OrderStatus.ACCEPTED){
+                availableCash -= order.getQuantity() * order.getPrice();
+            }
+        }
+        return availableCash;
+    }
+
+    private int getAvailableQuantity(int clientId, Stock stock){
+        ClientData data = clients.get(clientId);
+        int availableQuantity = (data.getWallet().get(stock) == null ? 0 : data.getWallet().get(stock));
+        for(Order order : data.getOrders()){
+            if(order.getSide() == OrderSide.ASK && order.getStock() == stock && order.getStatus() == OrderStatus.ACCEPTED){
+                availableQuantity -= order.getQuantity();
+            }
+        }
+        return availableQuantity;
     }
 
     public synchronized void processOrder(int clientId, Order order){
@@ -129,13 +151,23 @@ public class DataManager {
             int sellerNewQuantity = sellerData.getWallet().get(trade.stock()) - trade.quantity();
             sellerData.setCash(sellerNewCash);
             sellerData.getWallet().put(trade.stock(), sellerNewQuantity);
-        }catch(ClientNotFoundException e){
+
+            Order buyOrder = findOrderFromOrderId(trade.buyerOrderId());
+            Order sellOrder = findOrderFromOrderId(trade.sellerOrderId());
+
+            if(buyOrder.getQuantity() == 0){
+                buyerData.getOrders().remove(buyOrder);
+            }
+            if(sellOrder.getQuantity() == 0){
+                sellerData.getOrders().remove(sellOrder);
+            }
+
+        }catch(ClientNotFoundException | OrderNotFoundException e){
             System.out.println(e.getMessage());
         }
     }
 
     private ClientData findClientFromOrderId(int orderId) throws ClientNotFoundException {
-        ClientData toFind;
         for(ClientData client : clients.values()){
             ArrayList<Order> clientOrders = client.getOrders();
             for (Order order : clientOrders){
@@ -145,6 +177,18 @@ public class DataManager {
             }
         }
         throw new ClientNotFoundException(orderId);
+    }
+
+    private Order findOrderFromOrderId(int orderId) throws OrderNotFoundException {
+        for(ClientData client : clients.values()){
+            ArrayList<Order> clientOrders = client.getOrders();
+            for (Order order : clientOrders){
+                if(order.getOrderId() == orderId){
+                    return order;
+                }
+            }
+        }
+        throw new OrderNotFoundException(orderId);
     }
 
     private void setPrice(Stock stock, int price) {

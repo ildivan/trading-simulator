@@ -2,7 +2,9 @@ package client;
 
 import exceptions.OrderNotFoundException;
 import server.ClientData;
-import trading.*;
+import trading.Order;
+import trading.OrderSide;
+import trading.Stock;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -73,6 +75,7 @@ public class ClientModel {
         Order orderToSend = new Order(side,stock,quantity,price);
         try{
             out.writeObject(orderToSend);
+            out.flush();
         }catch(IOException e){
             System.out.println("PROBLEM WITH SERVER CONNECTION");
         }
@@ -107,7 +110,9 @@ public class ClientModel {
         for(Stock stock : receivedPrices.keySet()){
             if(prices.containsKey(stock) && prices.get(stock) != null){
                 ArrayList<Integer> stockPrices = prices.get(stock);
-                stockPrices.add(receivedPrices.get(stock));
+                if(!receivedPrices.get(stock).equals(stockPrices.get(stockPrices.size() - 1))){
+                    stockPrices.add(receivedPrices.get(stock));
+                }
                 if(stockPrices.size() > MAX_PRICES_STORED){
                     stockPrices.remove(0);
                 }
