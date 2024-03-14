@@ -5,22 +5,22 @@ import trading.Stock;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.TreeMap;
 
 public class ClientData implements Serializable {
     private int cash;
-    private HashMap<Stock,Integer> wallet;
+    private TreeMap<Stock,Integer> wallet;
     private ArrayList<Order> orders;
 
     public ClientData(){
         cash = 0;
-        wallet = new HashMap<>();
+        wallet = new TreeMap<>();
         orders = new ArrayList<>();
     }
 
     public ClientData(ClientData toCopy){
         cash = toCopy.getCash();
-        wallet = new HashMap<>(toCopy.getWallet());
+        wallet = new TreeMap<>(toCopy.getWallet());
         orders = new ArrayList<>(toCopy.getOrders());
     }
 
@@ -31,7 +31,7 @@ public class ClientData implements Serializable {
         this.cash = cash;
     }
 
-    public HashMap<Stock, Integer> getWallet() {
+    public TreeMap<Stock, Integer> getWallet() {
         return wallet;
     }
 

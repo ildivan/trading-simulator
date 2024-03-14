@@ -123,19 +123,12 @@ public class ClientView extends JFrame {
             return;
         }
 
-        if(wallet.getListOfElements().isEmpty()){
-            for (int i = 0; i < nameList.size(); i++) {
-                addStockToWallet(nameList.get(i),quantityList.get(i),valueList.get(i));
-            }
-        }else{
-            for (int i = 0; i < wallet.getListOfElements().size(); i++) {
-                if(quantityList.get(i) > 0){
-                    WalletItem currentItem = wallet.getListOfElements().get(i);
-                    currentItem.setQuantity(quantityList.get(i));
-                    currentItem.setValue(valueList.get(i));
-                }
-            }
+        wallet.removeAllElements();
+
+        for (int i = 0; i < nameList.size(); i++) {
+            addStockToWallet(nameList.get(i),quantityList.get(i),valueList.get(i));
         }
+
         getContentPane().repaint();
     }
 

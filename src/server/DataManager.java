@@ -1,5 +1,6 @@
 package server;
 
+import exceptions.ClientNotFoundException;
 import trading.*;
 
 import java.util.ArrayList;
@@ -115,18 +116,35 @@ public class DataManager {
     private void processTrade(TradeReport trade){
         setPrice(trade.stock(),trade.price());
 
-        ClientData buyerData = clients.get(trade.buyerOrderId());
-        ClientData sellerData = clients.get(trade.sellerOrderId());
+        try{
+            ClientData buyerData = findClientFromOrderId(trade.buyerOrderId());
+            ClientData sellerData = findClientFromOrderId(trade.sellerOrderId());
 
-        int buyerNewCash = buyerData.getCash() - trade.quantity()* trade.price();
-        int buyerNewQuantity = buyerData.getWallet().get(trade.stock()) + trade.quantity();
-        buyerData.setCash(buyerNewCash);
-        buyerData.getWallet().put(trade.stock(), buyerNewQuantity);
+            int buyerNewCash = buyerData.getCash() - trade.quantity()* trade.price();
+            int buyerNewQuantity = buyerData.getWallet().get(trade.stock()) + trade.quantity();
+            buyerData.setCash(buyerNewCash);
+            buyerData.getWallet().put(trade.stock(), buyerNewQuantity);
 
-        int sellerNewCash = sellerData.getCash() + trade.quantity()* trade.price();
-        int sellerNewQuantity = sellerData.getWallet().get(trade.stock()) - trade.quantity();
-        sellerData.setCash(sellerNewCash);
-        sellerData.getWallet().put(trade.stock(), sellerNewQuantity);
+            int sellerNewCash = sellerData.getCash() + trade.quantity() * trade.price();
+            int sellerNewQuantity = sellerData.getWallet().get(trade.stock()) - trade.quantity();
+            sellerData.setCash(sellerNewCash);
+            sellerData.getWallet().put(trade.stock(), sellerNewQuantity);
+        }catch(ClientNotFoundException e){
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private ClientData findClientFromOrderId(int orderId) throws ClientNotFoundException {
+        ClientData toFind;
+        for(ClientData client : clients.values()){
+            ArrayList<Order> clientOrders = client.getOrders();
+            for (Order order : clientOrders){
+                if(order.getOrderId() == orderId){
+                    return client;
+                }
+            }
+        }
+        throw new ClientNotFoundException(orderId);
     }
 
     private void setPrice(Stock stock, int price) {
