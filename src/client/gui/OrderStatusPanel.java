@@ -34,7 +34,7 @@ public class OrderStatusPanel extends Section {
         orderIdLabel.setText("Order number: " + orderId);
         orderSideLabel.setText("Order type: " + orderSide);
         stockLabel.setText("Stock: " + stock);
-        quantityLabel.setText("Quantity: " + quantity);
+        quantityLabel.setText("Remaining quantity: " + quantity);
         priceLabel.setText("Price : " + price);
         statusLabel.setText("Order status: " + status);
     }

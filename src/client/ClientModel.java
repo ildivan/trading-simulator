@@ -86,6 +86,9 @@ public class ClientModel {
             Object received = in.readObject();
             if(received instanceof ClientData receivedData){
                 data = receivedData;
+                try{
+                    System.out.println((data.getOrders().get(0).getQuantity()));
+                }catch(Exception ignored){}
                 updateClientData();
             }else if(received instanceof TreeMap<?,?> receivedPrices){
                 @SuppressWarnings("unchecked")
@@ -104,6 +107,7 @@ public class ClientModel {
         }
         controller.updateWallet(data,lastPrices);
         controller.updateOrders(data);
+
     }
 
     private void updatePrices(TreeMap<Stock,Integer> receivedPrices){

@@ -2,7 +2,7 @@ package trading;
 
 import java.io.Serializable;
 
-public class Order implements Serializable {
+public class Order implements Serializable , Cloneable{
     private int orderId;
     private OrderSide side;
     private Stock stock;
@@ -10,13 +10,16 @@ public class Order implements Serializable {
     private int price;
     private OrderStatus status;
 
-    public Order(int orderId, OrderSide side,  Stock stock, int quantity, int price) {
+    public Order(int orderId, OrderSide side,  Stock stock, int quantity, int price,OrderStatus status) {
         this.orderId = orderId;
         this.side = side;
         this.stock = stock;
         this.quantity = quantity;
         this.price = price;
-        status = OrderStatus.PENDING;
+        this.status = status;
+    }
+    public Order(int orderId, OrderSide side,  Stock stock, int quantity, int price) {
+        this(orderId,side,stock,quantity,price,OrderStatus.PENDING);
     }
 
     public Order(OrderSide side,  Stock stock, int quantity, int price) {
@@ -64,4 +67,9 @@ public class Order implements Serializable {
         return quantity == 0;
     }
 
+    @Override
+    public Order clone() throws CloneNotSupportedException {
+        super.clone();
+        return new Order(orderId,side,stock,quantity,price,status);
+    }
 }

@@ -47,4 +47,8 @@ public class OrderItem extends ClickableItem {
     public int getOrderId(){
         return orderId;
     }
+
+    public void setQuantity(int quantity){
+        quantityLabel.setText("Q: " + quantity);
+    }
 }

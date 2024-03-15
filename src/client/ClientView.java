@@ -1,10 +1,12 @@
 package client;
 
 import client.gui.*;
+import exceptions.OrderNotFoundException;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class ClientView extends JFrame {
     public static final Color HEADING_BACKGROUND_COLOR = new Color(0x555557);
@@ -13,8 +15,8 @@ public class ClientView extends JFrame {
     public static final Font HEADING_FONT = new Font("Times New Roman",Font.PLAIN,24);
     public static final Font CONTENT_FONT = new Font("Times New Roman",Font.PLAIN,16);
     public static final Color SELECTED_COLOR = new Color(0x464444);
-    public static final int minimumHeight = 640;
-    public static final int minimumWidth = 1040;
+    public static final int minimumHeight = 800;
+    public static final int minimumWidth = 1300;
     private ClientController controller;
     private CustomTabbedPane tabs;
     private SectionWithList<WalletItem> wallet;
@@ -147,9 +149,26 @@ public class ClientView extends JFrame {
         for (int i = nameList.size()-1 ; i >= 0; i--) {
             if(!orderIds.contains(orderIdList.get(i))){
                 addOrder(orderIdList.get(i),orderSideList.get(i),nameList.get(i),quantityList.get(i));
+            }else{
+                try{
+                    OrderItem toModify = findOrderItemFromId(orderIdList.get(i));
+                    System.out.println(quantityList.get(i));
+                    toModify.setQuantity(quantityList.get(i));
+                }catch(OrderNotFoundException e){
+                    System.out.println(e.getMessage() + " not found");
+                }
             }
         }
         getContentPane().repaint();
+    }
+
+    private OrderItem findOrderItemFromId(int orderId) throws OrderNotFoundException {
+        ArrayList<OrderItem> orderItems = orders.getListOfElements();
+        Optional<OrderItem> found = orderItems.stream().filter((o) -> o.getOrderId() == orderId).findFirst();
+        if(found.isPresent()){
+            return found.get();
+        }
+        throw new OrderNotFoundException(orderId);
     }
 
     public void addOrder(int orderId, String side, String name, int quantity){

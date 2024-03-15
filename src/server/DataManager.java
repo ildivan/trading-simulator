@@ -14,11 +14,10 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class DataManager {
-    private HashMap<Integer,ClientData> clients;
-    private TreeMap<Stock,Integer> prices;
+    private volatile HashMap<Integer,ClientData> clients;
+    private volatile TreeMap<Stock,Integer> prices;
     private LinkedBlockingDeque<TradeReport> tradesToProcess;
     private TreeMap<Stock, TradingEngine> orderbooks;
-    private ArrayList<Order> completedOrders;
     private volatile int orderCounter;
     private static final int RANGE_STARTING_PRICE = 30001;
     private static final int BASE_STARTING_PRICE = 1000;
@@ -29,7 +28,6 @@ public class DataManager {
         prices = new TreeMap<>();
         orderbooks = new TreeMap<>();
         tradesToProcess = new LinkedBlockingDeque<>();
-        completedOrders = new ArrayList<>();
         orderCounter = 0;
 
         setDefaultPrices();

@@ -21,7 +21,12 @@ public class ClientData implements Serializable {
     public ClientData(ClientData toCopy){
         cash = toCopy.getCash();
         wallet = new TreeMap<>(toCopy.getWallet());
-        orders = new ArrayList<>(toCopy.getOrders());
+        orders = new ArrayList<>();
+        for (Order orderToCopy : toCopy.getOrders()) {
+            try{
+                orders.add(orderToCopy.clone());
+            }catch(CloneNotSupportedException ignored){}
+        }
     }
 
     public int getCash(){
