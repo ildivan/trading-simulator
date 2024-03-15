@@ -1,7 +1,5 @@
 package trading;
 
-import exceptions.NegativeQuantityException;
-
 import java.io.Serializable;
 
 public class Order implements Serializable {
@@ -45,7 +43,7 @@ public class Order implements Serializable {
     }
     public void decreaseQuantity(int quantityToDecrease){
         if(quantityToDecrease > quantity){
-            throw new NegativeQuantityException(quantity,quantityToDecrease);
+            quantity = 0;
         }
         quantity -= quantityToDecrease;
     }
@@ -61,4 +59,9 @@ public class Order implements Serializable {
     public void setStatus(OrderStatus status){
         this.status = status;
     }
+
+    public boolean isCompleted(){
+        return quantity == 0;
+    }
+
 }

@@ -144,7 +144,6 @@ public class ClientView extends JFrame {
             return;
         }
         ArrayList<Integer> orderIds = new ArrayList<>(orders.getListOfElements().stream().map(OrderItem::getOrderId).toList());
-        orders.removeIf((order) -> !orderIdList.contains(order.getOrderId()));
         for (int i = nameList.size()-1 ; i >= 0; i--) {
             if(!orderIds.contains(orderIdList.get(i))){
                 addOrder(orderIdList.get(i),orderSideList.get(i),nameList.get(i),quantityList.get(i));
