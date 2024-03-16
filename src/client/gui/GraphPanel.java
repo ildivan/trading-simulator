@@ -59,7 +59,7 @@ public class GraphPanel extends JPanel {
         Graphics2D g2D = (Graphics2D) g;
         drawBackGround(g2D);
         g2D.setFont(ClientView.CONTENT_FONT);
-        if(values.size() < 2){
+        if(values.isEmpty()){
             return;
         }
         max = Collections.max(values);
