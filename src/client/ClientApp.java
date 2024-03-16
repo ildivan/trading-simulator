@@ -5,7 +5,6 @@ public class ClientApp {
          ClientController controller = new ClientController();
          ClientView view = controller.getView();
          ClientModel model = controller.getModel();
-         Thread connectionThread = new Thread(model::connect);
-         connectionThread.start();
+         model.connect();
     }
 }

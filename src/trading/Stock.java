@@ -17,4 +17,20 @@ public enum Stock implements Serializable {
         }
         throw new StockNotFoundException(stockName);
     }
+
+    public static Stock findByOrdinal(int ordinal) throws StockNotFoundException {
+        if(ordinal > values().length){
+            throw new StockNotFoundException("Ordinal too high");
+        } else if (ordinal < 0) {
+            throw new StockNotFoundException("Negative ordinal");
+        }
+
+        for(Stock stock : values()){
+            if(stock.ordinal() == ordinal){
+                return stock;
+            }
+        }
+
+        throw new StockNotFoundException("Stock not found by ordinal");
+    }
 }

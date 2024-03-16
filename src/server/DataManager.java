@@ -21,7 +21,7 @@ public class DataManager {
     private volatile int orderCounter;
     private static final int RANGE_STARTING_PRICE = 30001;
     private static final int BASE_STARTING_PRICE = 1000;
-    private static final int STARTING_CASH = 200000;
+    private static final int STARTING_CASH = 150000;
 
     public DataManager() {
         clients = new HashMap<>();
@@ -148,20 +148,21 @@ public class DataManager {
 
         try{
             ClientData buyerData = findClientFromOrderId(trade.buyerOrderId());
-            ClientData sellerData = findClientFromOrderId(trade.sellerOrderId());
 
             int buyerNewCash = buyerData.getCash() - trade.quantity()* trade.price();
             int buyerNewQuantity = buyerData.getWallet().get(trade.stock()) + trade.quantity();
             buyerData.setCash(buyerNewCash);
             buyerData.getWallet().put(trade.stock(), buyerNewQuantity);
+        }catch(ClientNotFoundException ignored){} //Exception thrown if seller disconnected
+
+        try{
+            ClientData sellerData = findClientFromOrderId(trade.sellerOrderId());
 
             int sellerNewCash = sellerData.getCash() + trade.quantity() * trade.price();
             int sellerNewQuantity = sellerData.getWallet().get(trade.stock()) - trade.quantity();
             sellerData.setCash(sellerNewCash);
             sellerData.getWallet().put(trade.stock(), sellerNewQuantity);
-        }catch(ClientNotFoundException e){
-            System.out.println(e.getMessage());
-        }
+        }catch(ClientNotFoundException ignored){} //Exception thrown if buyer disconnected
     }
 
     private ClientData findClientFromOrderId(int orderId) throws ClientNotFoundException {

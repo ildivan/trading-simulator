@@ -1,7 +1,7 @@
-package client;
+package server;
 
 import exceptions.OrderNotFoundException;
-import server.ClientData;
+import exceptions.StockNotFoundException;
 import trading.Order;
 import trading.OrderSide;
 import trading.Stock;
@@ -11,25 +11,28 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.TreeMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class ClientModel {
-    private ClientController controller;
+public class TradingBot {
     private ClientData data;
     private TreeMap<Stock,ArrayList<Integer>> prices;
-    private Stock selectedStock;
     private AtomicBoolean isRunning;
     private Socket socket;
     private ObjectOutputStream out;
     private ObjectInputStream in;
+    private Random rand;
     private static final int MAX_PRICES_STORED = 15;
 
-    public ClientModel(ClientController controller) {
-        this.controller = controller;
+    public TradingBot() {
         this.data = new ClientData();
         this.prices = new TreeMap<>();
         isRunning = new AtomicBoolean(true);
+        rand = new Random();
     }
 
     public void connect(){
@@ -44,8 +47,10 @@ public class ClientModel {
                     handleReceive();
                 }
             });
-
             receiveThread.start();
+
+            ScheduledExecutorService tradingThread = Executors.newSingleThreadScheduledExecutor();
+            tradingThread.scheduleAtFixedRate(this::trade,0, 2, TimeUnit.SECONDS);
 
         } catch (IOException e) {
             System.out.printf("CLIENT ERROR: %s",e.getMessage());
@@ -85,7 +90,7 @@ public class ClientModel {
         try{
             Object received = in.readObject();
             if(received instanceof ClientData receivedData){
-                updateClientData(receivedData);
+                data = receivedData;
             }else if(received instanceof TreeMap<?,?> receivedPrices){
                 @SuppressWarnings("unchecked")
                 TreeMap<Stock, Integer> prices = (TreeMap<Stock, Integer>) receivedPrices;
@@ -94,18 +99,6 @@ public class ClientModel {
         }catch(IOException | ClassNotFoundException ignored){}
     }
 
-    private void updateClientData(ClientData receivedData) {
-        data = receivedData;
-        TreeMap<Stock,Integer> lastPrices = new TreeMap<>();
-        for(Stock stock : prices.keySet()){
-            ArrayList<Integer> priceList = prices.get(stock);
-            int lastPrice = priceList.get(priceList.size() - 1);
-            lastPrices.put(stock,lastPrice);
-        }
-        controller.updateWallet(data,lastPrices);
-        controller.updateOrders(data);
-
-    }
 
     private void updatePrices(TreeMap<Stock,Integer> receivedPrices){
         for(Stock stock : receivedPrices.keySet()){
@@ -129,8 +122,6 @@ public class ClientModel {
                 prices.remove(stock);
             }
         }
-
-        controller.updatePrices(prices,selectedStock);
     }
 
     public Order getOrderFromId(int orderId) throws OrderNotFoundException {
@@ -142,11 +133,69 @@ public class ClientModel {
         throw new OrderNotFoundException(orderId);
     }
 
+    private void trade(){
+        try{
+            for(Stock stock : Stock.values()){
+                if(data.getWallet().get(stock) > 0){
+                    int currentPrice = getLastPrice(stock);
+                    int price = currentPrice + rand.nextInt(currentPrice / 50)*(rand.nextBoolean() ? 1 : -1);
+                    Order order = new Order(OrderSide.ASK,stock,data.getWallet().get(stock),price);
+                    out.writeObject(order);
+                    out.flush();
+                }
+            }
 
-    public ArrayList<Integer> getPrices(Stock stock){
-        return prices.get(stock);
+            if(data.getCash() > 0){
+                int firstOrdinal = rand.nextInt(Stock.values().length);
+                int secondOrdinal = rand.nextInt(Stock.values().length);
+                try{
+                    Stock firstStock = Stock.findByOrdinal(firstOrdinal);
+                    Stock secondStock = Stock.findByOrdinal(secondOrdinal);
+                    int cash = data.getCash();
+                    while(true){
+                        int firstStockPrice = getLastPrice(firstStock);
+                        int secondStockPrice = getLastPrice(secondStock);
+
+                        if(cash > firstStockPrice){
+                            sendOrder(firstStock,OrderSide.BID,1);
+                            cash -= firstStockPrice;
+                        }
+                        if(cash > secondStockPrice){
+                            sendOrder(secondStock,OrderSide.BID,1);
+                            cash -= secondStockPrice;
+                        }
+
+                        if(cash < firstStockPrice && cash < secondStockPrice){
+                            break;
+                        }
+                    }
+                }catch(StockNotFoundException ignored){}
+
+
+            }
+        }catch(IOException e){
+            stopClient();
+        }
     }
-    public void setSelectedStock(Stock stock){
-        selectedStock = stock;
+
+    private int getLastPrice(Stock stock){
+        return prices.get(stock).get(prices.get(stock).size()-1);
+    }
+
+    private void sendOrder(Stock stock, OrderSide side, int quantity) throws IOException {
+        int currentPrice = getLastPrice(stock);
+        int price = currentPrice + rand.nextInt(currentPrice / 50)*(rand.nextBoolean() ? 1 : -1);
+        Order order = new Order(side,stock,quantity,price);
+        out.writeObject(order);
+        out.flush();
+    }
+
+    public static void main(String[] args) {
+        ArrayList<TradingBot> bots = new ArrayList<>();
+        for (int i = 0; i < 15; i++) {
+            bots.add(new TradingBot());
+            bots.get(i).connect();
+        }
     }
 }
+
