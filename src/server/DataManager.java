@@ -19,9 +19,10 @@ public class DataManager {
     private LinkedBlockingDeque<TradeReport> tradesToProcess;
     private TreeMap<Stock, TradingEngine> orderbooks;
     private volatile int orderCounter;
-    private static final int RANGE_STARTING_PRICE = 30001;
+    private static final int RANGE_STARTING_PRICE = 20001;
     private static final int BASE_STARTING_PRICE = 1000;
-    private static final int STARTING_CASH = 150000;
+    private static final int STARTING_QUANTITY_PER_STOCK = 2;
+    private final int STARTING_CASH;
 
     public DataManager() {
         clients = new HashMap<>();
@@ -31,6 +32,9 @@ public class DataManager {
         orderCounter = 0;
 
         setDefaultPrices();
+
+        STARTING_CASH = calculateStartingCash();
+
         setupOrderBooks();
 
         ScheduledExecutorService processTradesThreadManager = Executors.newSingleThreadScheduledExecutor();
@@ -41,6 +45,14 @@ public class DataManager {
                         processTrade(tradeToProcess);
                     }},
                 0, 100, TimeUnit.MILLISECONDS);
+    }
+
+    private int calculateStartingCash() {
+        int startingCash = 0;
+        for(Stock stock : Stock.values()){
+            startingCash += prices.get(stock)*STARTING_QUANTITY_PER_STOCK;
+        }
+        return startingCash;
     }
 
     private void setDefaultPrices() {
@@ -72,7 +84,7 @@ public class DataManager {
 
     private void setDefaultStocks(int clientId) {
         for (Stock stock : Stock.values()){
-            clients.get(clientId).getWallet().put(stock,2);
+            clients.get(clientId).getWallet().put(stock,STARTING_QUANTITY_PER_STOCK);
         }
     }
 

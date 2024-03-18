@@ -7,7 +7,9 @@ import java.io.Serializable;
 public enum Stock implements Serializable {
     TEXLA,
     GOOGOL,
-    MACROSOFT;
+    MACROSOFT,
+    FAKEBOOK,
+    SPACEY;
 
     public static Stock find(String stockName) throws StockNotFoundException {
         for(Stock stock : values()){

@@ -1,6 +1,5 @@
 package server;
 
-import exceptions.OrderNotFoundException;
 import exceptions.StockNotFoundException;
 import trading.Order;
 import trading.OrderSide;
@@ -25,6 +24,7 @@ public class TradingBot {
     private Socket socket;
     private ObjectOutputStream out;
     private ObjectInputStream in;
+    private ScheduledExecutorService tradingThread;
     private Random rand;
     private static final int MAX_PRICES_STORED = 15;
 
@@ -49,8 +49,8 @@ public class TradingBot {
             });
             receiveThread.start();
 
-            ScheduledExecutorService tradingThread = Executors.newSingleThreadScheduledExecutor();
-            tradingThread.scheduleAtFixedRate(this::trade,0, 2, TimeUnit.SECONDS);
+            tradingThread = Executors.newSingleThreadScheduledExecutor();
+            tradingThread.scheduleAtFixedRate(this::trade,rand.nextInt(20), 20, TimeUnit.SECONDS);
 
         } catch (IOException e) {
             System.out.printf("CLIENT ERROR: %s",e.getMessage());
@@ -76,15 +76,6 @@ public class TradingBot {
         }
     }
 
-    public synchronized void sendOrder(OrderSide side, Stock stock, int quantity, int price){
-        Order orderToSend = new Order(side,stock,quantity,price);
-        try{
-            out.writeObject(orderToSend);
-            out.flush();
-        }catch(IOException e){
-            System.out.println("PROBLEM WITH SERVER CONNECTION");
-        }
-    }
 
     private void handleReceive() {
         try{
@@ -124,24 +115,11 @@ public class TradingBot {
         }
     }
 
-    public Order getOrderFromId(int orderId) throws OrderNotFoundException {
-        for(Order order : data.getOrders()){
-            if(order.getOrderId() == orderId){
-                return order;
-            }
-        }
-        throw new OrderNotFoundException(orderId);
-    }
-
     private void trade(){
         try{
             for(Stock stock : Stock.values()){
                 if(data.getWallet().get(stock) > 0){
-                    int currentPrice = getLastPrice(stock);
-                    int price = currentPrice + rand.nextInt(currentPrice / 50)*(rand.nextBoolean() ? 1 : -1);
-                    Order order = new Order(OrderSide.ASK,stock,data.getWallet().get(stock),price);
-                    out.writeObject(order);
-                    out.flush();
+                    sendOrder(stock,OrderSide.ASK,data.getWallet().get(stock));
                 }
             }
 
@@ -151,23 +129,32 @@ public class TradingBot {
                 try{
                     Stock firstStock = Stock.findByOrdinal(firstOrdinal);
                     Stock secondStock = Stock.findByOrdinal(secondOrdinal);
+                    int firstQuantity = 0;
+                    int secondQuantity = 0;
+                    int firstStockPrice = getLastPrice(firstStock);
+                    int secondStockPrice = getLastPrice(secondStock);
                     int cash = data.getCash();
-                    while(true){
-                        int firstStockPrice = getLastPrice(firstStock);
-                        int secondStockPrice = getLastPrice(secondStock);
 
+                    while(true){
                         if(cash > firstStockPrice){
-                            sendOrder(firstStock,OrderSide.BID,1);
+                            firstQuantity += 1;
                             cash -= firstStockPrice;
                         }
                         if(cash > secondStockPrice){
-                            sendOrder(secondStock,OrderSide.BID,1);
+                            secondQuantity += 1;
                             cash -= secondStockPrice;
                         }
 
                         if(cash < firstStockPrice && cash < secondStockPrice){
                             break;
                         }
+                    }
+
+                    if(firstQuantity != 0){
+                        sendOrder(firstStock,OrderSide.BID,firstQuantity);
+                    }
+                    if(secondQuantity != 0){
+                        sendOrder(secondStock,OrderSide.BID,secondQuantity);
                     }
                 }catch(StockNotFoundException ignored){}
 
@@ -182,9 +169,22 @@ public class TradingBot {
         return prices.get(stock).get(prices.get(stock).size()-1);
     }
 
-    private void sendOrder(Stock stock, OrderSide side, int quantity) throws IOException {
+    private synchronized void sendOrder(Stock stock, OrderSide side, int quantity) throws IOException {
         int currentPrice = getLastPrice(stock);
-        int price = currentPrice + rand.nextInt(currentPrice / 50)*(rand.nextBoolean() ? 1 : -1);
+        int price = currentPrice;
+        if(side == OrderSide.BID){
+            if(rand.nextBoolean()){
+                price += rand.nextInt(currentPrice / 50);
+            }else{
+                price -= rand.nextInt(currentPrice / 100);
+            }
+        }else{
+            if(rand.nextBoolean()){
+                price -= rand.nextInt(currentPrice / 50);
+            }else{
+                price += rand.nextInt(currentPrice / 100);
+            }
+        }
         Order order = new Order(side,stock,quantity,price);
         out.writeObject(order);
         out.flush();
@@ -192,7 +192,7 @@ public class TradingBot {
 
     public static void main(String[] args) {
         ArrayList<TradingBot> bots = new ArrayList<>();
-        for (int i = 0; i < 15; i++) {
+        for (int i = 0; i < 60; i++) {
             bots.add(new TradingBot());
             bots.get(i).connect();
         }

@@ -22,7 +22,7 @@ public class CommunicationServer {
     public CommunicationServer(DataManager manager){
         this.manager = manager;
         this.handlers = new ArrayList<>();
-        this.clientsThreadManager = Executors.newFixedThreadPool(10);
+        this.clientsThreadManager = Executors.newFixedThreadPool(101);
         this.dataSender = Executors.newSingleThreadScheduledExecutor();
         this.clientIdCounter = new AtomicInteger(0);
     }
@@ -33,6 +33,7 @@ public class CommunicationServer {
         try(ServerSocket serverSocket = new ServerSocket(12345)){
             while (true) {
                 Socket socket = serverSocket.accept();
+                System.out.println("CONNECTION ESTABLISHED");
                 clientIdCounter.addAndGet(1);
                 manager.addClient(clientIdCounter.get());
                 ClientHandler clientHandler = new ClientHandler(clientIdCounter.get(),socket, manager);
