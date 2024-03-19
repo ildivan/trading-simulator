@@ -23,7 +23,7 @@ public class ClientModel {
     private Socket socket;
     private ObjectOutputStream out;
     private ObjectInputStream in;
-    private static final int MAX_PRICES_STORED = 15;
+    private static final int MAX_PRICES_STORED = 30;
 
     public ClientModel(ClientController controller) {
         this.controller = controller;

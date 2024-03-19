@@ -192,7 +192,7 @@ public class TradingBot {
 
     public static void main(String[] args) {
         ArrayList<TradingBot> bots = new ArrayList<>();
-        for (int i = 0; i < 60; i++) {
+        for (int i = 0; i < 200; i++) {
             bots.add(new TradingBot());
             bots.get(i).connect();
         }

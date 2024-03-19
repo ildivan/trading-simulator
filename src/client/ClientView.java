@@ -21,6 +21,7 @@ public class ClientView extends JFrame {
     private CustomTabbedPane tabs;
     private SectionWithList<WalletItem> wallet;
     private JLabel cashLabel;
+    private JLabel totalValueLabel;
     private SectionWithList<OrderItem> orders;
     private OrderStatusPanel orderStatus;
     private SectionWithList<PriceItem> prices;
@@ -60,11 +61,11 @@ public class ClientView extends JFrame {
         walletAndOrders.setBackground(ClientView.CONTENT_BACKGROUND_COLOR);
         wallet = new SectionWithList<>("WALLET");
 
-        JPanel cashPanel = new JPanel();
-        cashPanel.setPreferredSize(new Dimension(wallet.getWidth(),70));
-        cashPanel.setBackground(ClientView.CONTENT_BACKGROUND_COLOR);
-        cashPanel.setLayout(new BoxLayout(cashPanel,BoxLayout.X_AXIS));
-        cashPanel.add(Box.createGlue());
+        JPanel moneyPanel = new JPanel();
+        moneyPanel.setPreferredSize(new Dimension(wallet.getWidth(),70));
+        moneyPanel.setBackground(ClientView.CONTENT_BACKGROUND_COLOR);
+        moneyPanel.setLayout(new BoxLayout(moneyPanel,BoxLayout.X_AXIS));
+        moneyPanel.add(Box.createGlue());
 
 
         cashLabel = new JLabel();
@@ -72,10 +73,17 @@ public class ClientView extends JFrame {
         cashLabel.setForeground(FONT_COLOR);
         setCash(0);
 
-        cashPanel.add(cashLabel);
-        cashPanel.add(Box.createGlue());
+        totalValueLabel = new JLabel();
+        totalValueLabel.setFont(HEADING_FONT);
+        totalValueLabel.setForeground(FONT_COLOR);
+        setTotalValue(0);
 
-        wallet.add(cashPanel,BorderLayout.SOUTH);
+        moneyPanel.add(cashLabel);
+        moneyPanel.add(Box.createGlue());
+        moneyPanel.add(totalValueLabel);
+        moneyPanel.add(Box.createGlue());
+
+        wallet.add(moneyPanel,BorderLayout.SOUTH);
         wallet.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 2, ClientView.HEADING_BACKGROUND_COLOR));
 
         JPanel ordersAndStatus = new JPanel();
@@ -118,6 +126,10 @@ public class ClientView extends JFrame {
 
     public void setCash(double cash){
         SwingUtilities.invokeLater(() -> cashLabel.setText(String.format("CASH: %.2f$",cash)));
+    }
+
+    public void setTotalValue(double totalValue){
+        SwingUtilities.invokeLater(() -> totalValueLabel.setText(String.format("TOTAL VALUE: %.2f$",totalValue)));
     }
 
     public void setStocksInWallet(ArrayList<String> nameList, ArrayList<Integer> quantityList, ArrayList<Double> valueList){

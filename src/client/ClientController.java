@@ -1,6 +1,9 @@
 package client;
 
-import client.gui.*;
+import client.gui.ClickableItem;
+import client.gui.OrderItem;
+import client.gui.PriceItem;
+import client.gui.SalePanel;
 import exceptions.StockNotFoundException;
 import server.ClientData;
 import trading.Order;
@@ -10,6 +13,7 @@ import trading.Stock;
 import javax.swing.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.TreeMap;
 
 public class ClientController implements ActionListener, MouseListener, WindowListener {
@@ -45,13 +49,10 @@ public class ClientController implements ActionListener, MouseListener, WindowLi
                 values.add(( quantity * price) / 100.0);
             }
         }
-        SwingUtilities.invokeLater(() -> {
-            view.setStocksInWallet(names,quantities,values);
-
-        });
-        SwingUtilities.invokeLater(() -> {
-            view.setCash(data.getCash()/100.0);
-        });
+        view.setStocksInWallet(names,quantities,values);
+        view.setCash(data.getCash()/100.0);
+        Optional<Double> walletValue = values.stream().reduce(Double::sum);
+        walletValue.ifPresent(value -> view.setTotalValue(value + data.getCash() / 100.0));
     }
 
     public void updateOrders(ClientData data){
