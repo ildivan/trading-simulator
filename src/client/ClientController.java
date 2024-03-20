@@ -79,9 +79,7 @@ public class ClientController implements ActionListener, MouseListener, WindowLi
                         .map(Order::getQuantity)
                         .toList()
         );
-        SwingUtilities.invokeLater(() -> {
-            view.setOrders(ids,sides,stockNames,quantities);
-        });
+        view.setOrders(ids,sides,stockNames,quantities);
     }
 
     public void updatePrices(TreeMap<Stock,ArrayList<Integer>> prices, Stock selectedStock){
@@ -108,14 +106,9 @@ public class ClientController implements ActionListener, MouseListener, WindowLi
                             .map((v) -> v/100.0)
                             .toList()
             );
-            SwingUtilities.invokeLater(() -> {
-                view.setGraphPrices(graphPrices);
-            });
+            view.setGraphPrices(graphPrices);
         }
-
-        SwingUtilities.invokeLater(() -> {
-            view.setStockPrices(names, values, risingStatusList);
-        });
+        view.setStockPrices(names, values, risingStatusList);
     }
 
     private ArrayList<String> getStockNames(TreeMap<Stock,?> prices){
@@ -179,9 +172,7 @@ public class ClientController implements ActionListener, MouseListener, WindowLi
                 model.setSelectedStock(stock);
                 ArrayList<Integer> pricesInCents = model.getPrices(stock);
                 ArrayList<Double> prices = new ArrayList<>(pricesInCents.stream().map((v) -> v/100.0).toList());
-                SwingUtilities.invokeLater(() -> {
-                    view.setGraphPrices(prices);
-                });
+                view.setGraphPrices(prices);
             }catch(Exception ignored){}
         }else if(clickedItem instanceof OrderItem orderItem){
             int orderId = orderItem.getOrderId();
