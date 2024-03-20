@@ -189,16 +189,22 @@ public class DataManager {
         throw new ClientNotFoundException(orderId);
     }
 
-    private Order findOrderFromOrderId(int orderId) throws OrderNotFoundException {
-        for(ClientData client : clients.values()){
-            ArrayList<Order> clientOrders = client.getOrders();
-            for (Order order : clientOrders){
-                if(order.getOrderId() == orderId){
-                    return order;
-                }
+    private Order findOrderFromOrderId(int clientId , int orderId) throws OrderNotFoundException {
+        ClientData client = clients.get(clientId);
+        ArrayList<Order> clientOrders = client.getOrders();
+        for (Order order : clientOrders){
+            if(order.getOrderId() == orderId){
+                return order;
             }
         }
         throw new OrderNotFoundException(orderId);
+    }
+
+    public synchronized void cancelOrder(int clientId, Order toCancel){
+        try{
+            Order orderToCancel = findOrderFromOrderId(clientId, toCancel.getOrderId());
+
+        }catch(OrderNotFoundException ignored){}
     }
 
     private void setPrice(Stock stock, int price) {
