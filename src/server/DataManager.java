@@ -203,7 +203,8 @@ public class DataManager {
     public synchronized void cancelOrder(int clientId, Order toCancel){
         try{
             Order orderToCancel = findOrderFromOrderId(clientId, toCancel.getOrderId());
-
+            orderToCancel.setStatus(OrderStatus.CANCELLED);
+            orderbooks.get(orderToCancel.getStock()).cancelOrderIfStillPresent(orderToCancel);
         }catch(OrderNotFoundException ignored){}
     }
 
