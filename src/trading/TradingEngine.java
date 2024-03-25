@@ -86,4 +86,19 @@ public class TradingEngine {
             limitLevel.insertOrder(order);
         }
     }
+
+    public synchronized void cancelOrderIfStillPresent(Order orderToCancel) {
+        if (orderToCancel.getSide() == OrderSide.BID) {
+            cancelOrderFromMap(orderToCancel,bids);
+        } else {
+            cancelOrderFromMap(orderToCancel,asks);
+        }
+    }
+    private void cancelOrderFromMap(Order orderToCancel, TreeMap<Integer,Limit> map){
+        for (Limit limit : map.values()) {
+            if (limit.getPriceLevel() == orderToCancel.getPrice()) {
+                limit.deleteOrder(orderToCancel.getOrderId());
+            }
+        }
+    }
 }

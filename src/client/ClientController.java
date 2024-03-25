@@ -55,7 +55,7 @@ public class ClientController implements ActionListener, MouseListener, WindowLi
         walletValue.ifPresent(value -> view.setTotalValue(value + data.getCash() / 100.0));
     }
 
-    public void updateOrders(ClientData data){
+    public void updateOrders(ClientData data, Order selectedOrder){
         ArrayList<Order> orders = data.getOrders();
         ArrayList<Integer> ids = new ArrayList<>(
                 orders.stream()
@@ -79,7 +79,11 @@ public class ClientController implements ActionListener, MouseListener, WindowLi
                         .map(Order::getQuantity)
                         .toList()
         );
+
         view.setOrders(ids,sides,stockNames,quantities);
+        if(selectedOrder != null){
+            updateOrderStatus(selectedOrder);
+        }
     }
 
     public void updatePrices(TreeMap<Stock,ArrayList<Integer>> prices, Stock selectedStock){
@@ -151,6 +155,9 @@ public class ClientController implements ActionListener, MouseListener, WindowLi
     public void mouseClicked(MouseEvent mouseEvent) {
         if(mouseEvent.getSource() instanceof ClickableItem clickedItem){
             handleItemClick(clickedItem);
+        }else if(mouseEvent.getSource() instanceof JLabel cancelLabel){
+            OrderItem parent = (OrderItem)cancelLabel.getParent();
+            model.cancelOrder(parent.getOrderId());
         }
     }
 
@@ -178,18 +185,19 @@ public class ClientController implements ActionListener, MouseListener, WindowLi
             int orderId = orderItem.getOrderId();
             try{
                 Order order = model.getOrderFromId(orderId);
+                model.setSelectedOrder(order.getOrderId());
                 updateOrderStatus(order);
             }catch(Exception ignored){}
         }
     }
 
     private void updateOrderStatus(Order order) {
-        view.setOrderStatus(
+        view.setOrderStatusPanel(
                 order.getOrderId(),
                 (order.getSide() == OrderSide.BID ? "BUY" : "SELL"),
                 order.getStock().toString(),
                 order.getQuantity(),
-                order.getPrice(),
+                order.getPrice()/100.0,
                 order.getStatus().toString()
         );
     }

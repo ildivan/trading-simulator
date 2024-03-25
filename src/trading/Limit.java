@@ -39,6 +39,10 @@ public class Limit {
         orders.remove();
     }
 
+    public void deleteOrder(int  orderId){
+        orders.removeIf((order) -> order.getOrderId() == orderId);
+    }
+
     public boolean isEmpty() {
         return orders.isEmpty();
     }

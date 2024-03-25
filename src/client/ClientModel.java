@@ -3,6 +3,7 @@ package client;
 import exceptions.OrderNotFoundException;
 import server.ClientData;
 import trading.Order;
+import trading.OrderCancellation;
 import trading.OrderSide;
 import trading.Stock;
 
@@ -19,6 +20,7 @@ public class ClientModel {
     private ClientData data;
     private TreeMap<Stock,ArrayList<Integer>> prices;
     private Stock selectedStock;
+    private int selectedOrder;
     private AtomicBoolean isRunning;
     private Socket socket;
     private ObjectOutputStream out;
@@ -103,7 +105,11 @@ public class ClientModel {
             lastPrices.put(stock,lastPrice);
         }
         controller.updateWallet(data,lastPrices);
-        controller.updateOrders(data);
+        try{
+            controller.updateOrders(data,getOrderFromId(selectedOrder));
+        }catch(OrderNotFoundException e){
+            controller.updateOrders(data,null);
+        }
 
     }
 
@@ -148,5 +154,19 @@ public class ClientModel {
     }
     public void setSelectedStock(Stock stock){
         selectedStock = stock;
+    }
+    public void setSelectedOrder(int orderId) {
+        try{
+            getOrderFromId(orderId);
+            selectedOrder = orderId;
+        }catch(OrderNotFoundException ignored){}
+    }
+
+    public synchronized void cancelOrder(int orderId){
+        try{
+            Order toCancel = getOrderFromId(orderId);
+            out.writeObject(new OrderCancellation(toCancel));
+            out.flush();
+        }catch(OrderNotFoundException | IOException ignored){}
     }
 }

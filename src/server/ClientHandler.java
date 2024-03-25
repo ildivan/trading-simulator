@@ -1,6 +1,7 @@
 package server;
 
 import trading.Order;
+import trading.OrderCancellation;
 import trading.Stock;
 
 import java.io.IOException;
@@ -33,6 +34,8 @@ public class ClientHandler implements Runnable{
 
                 if(receivedObject instanceof Order receivedOrder){
                     manager.processOrder(clientId,receivedOrder);
+                }else if(receivedObject instanceof OrderCancellation cancellation){
+                    manager.cancelOrder(clientId,cancellation.getOrder());
                 }
             }
         } catch (IOException e) {

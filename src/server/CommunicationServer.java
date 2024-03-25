@@ -22,7 +22,7 @@ public class CommunicationServer {
     public CommunicationServer(DataManager manager){
         this.manager = manager;
         this.handlers = new ArrayList<>();
-        this.clientsThreadManager = Executors.newFixedThreadPool(301);
+        this.clientsThreadManager = Executors.newFixedThreadPool(300);
         this.dataSender = Executors.newSingleThreadScheduledExecutor();
         this.clientIdCounter = new AtomicInteger(0);
     }

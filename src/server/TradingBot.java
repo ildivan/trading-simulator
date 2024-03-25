@@ -2,6 +2,7 @@ package server;
 
 import exceptions.StockNotFoundException;
 import trading.Order;
+import trading.OrderCancellation;
 import trading.OrderSide;
 import trading.Stock;
 
@@ -117,6 +118,15 @@ public class TradingBot {
 
     private void trade(){
         try{
+
+            for(Order order : data.getOrders()){
+                if(Math.abs(order.getPrice() - getLastPrice(order.getStock())) > getLastPrice(order.getStock())/25){
+                    OrderCancellation cancellation = new OrderCancellation(order);
+                    out.writeObject(cancellation);
+                    out.flush();
+                }
+            }
+
             for(Stock stock : Stock.values()){
                 if(data.getWallet().get(stock) > 0){
                     sendOrder(stock,OrderSide.ASK,data.getWallet().get(stock));
@@ -192,7 +202,7 @@ public class TradingBot {
 
     public static void main(String[] args) {
         ArrayList<TradingBot> bots = new ArrayList<>();
-        for (int i = 0; i < 300; i++) {
+        for (int i = 0; i < 250; i++) {
             bots.add(new TradingBot());
             bots.get(i).connect();
         }
