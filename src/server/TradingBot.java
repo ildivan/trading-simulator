@@ -120,7 +120,7 @@ public class TradingBot {
         try{
 
             for(Order order : data.getOrders()){
-                if(Math.abs(order.getPrice() - getLastPrice(order.getStock())) > getLastPrice(order.getStock())/20){
+                if(Math.abs(order.getPrice() - getLastPrice(order.getStock())) > getLastPrice(order.getStock())/25){
                     OrderCancellation cancellation = new OrderCancellation(order);
                     out.writeObject(cancellation);
                     out.flush();
@@ -202,7 +202,7 @@ public class TradingBot {
 
     public static void main(String[] args) {
         ArrayList<TradingBot> bots = new ArrayList<>();
-        for (int i = 0; i < 300; i++) {
+        for (int i = 0; i < 250; i++) {
             bots.add(new TradingBot());
             bots.get(i).connect();
         }

@@ -186,11 +186,12 @@ public class ClientView extends JFrame {
     public void addOrder(int orderId, String side, String name, int quantity){
         OrderItem newItem = new OrderItem(orderId, side, name, quantity);
         newItem.addMouseListener(controller);
+        newItem.getCancelLabel().addMouseListener(controller);
         SwingUtilities.invokeLater(() -> orders.addElementToList(newItem));
     }
 
-    public void setOrderStatus(int orderId, String orderSide,
-                               String stock, int quantity, double price, String status){
+    public void setOrderStatusPanel(int orderId, String orderSide,
+                                    String stock, int quantity, double price, String status){
         SwingUtilities.invokeLater(() -> orderStatus.setOrder(orderId, orderSide, stock, quantity, price, status));
     }
 

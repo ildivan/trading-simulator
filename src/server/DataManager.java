@@ -205,6 +205,7 @@ public class DataManager {
             Order orderToCancel = findOrderFromOrderId(clientId, toCancel.getOrderId());
             orderToCancel.setStatus(OrderStatus.CANCELLED);
             orderbooks.get(orderToCancel.getStock()).cancelOrderIfStillPresent(orderToCancel);
+            System.out.println("ORDINE CANCELLATO");
         }catch(OrderNotFoundException ignored){}
     }
 
