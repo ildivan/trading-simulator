@@ -142,8 +142,6 @@ public class DataManager {
         }else{
             TradingEngine orderbook = orderbooks.get(order.getStock());
             orderbook.insertOrder(order);
-            Thread matchingThread = new Thread(orderbook::match);
-            matchingThread.start();
         }
 
         ClientData data = clients.get(clientId);

@@ -45,7 +45,7 @@ public class OrderItem extends ClickableItem {
                 super.mouseEntered(e);
                 cancelLabel.setForeground(new Color(0xFF3A3A));
                 cancelLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
-                setBackground(new Color(0x14F73B3B, true));
+                setBackground(new Color(0xAF73B3B, true));
             }
 
             @Override

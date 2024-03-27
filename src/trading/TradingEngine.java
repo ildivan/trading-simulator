@@ -9,6 +9,9 @@ public class TradingEngine {
     private DataManager manager;
     private TreeMap<Integer,Limit> bids;
     private TreeMap<Integer,Limit> asks;
+    private volatile int counter = 0;
+
+    private static boolean OPTIMIZATION_ON = true;
 
     public TradingEngine(DataManager manager){
         bids = new TreeMap<>((a , b) -> -Integer.compare(a,b)); //bid with the highest price is first
@@ -22,6 +25,12 @@ public class TradingEngine {
         }else{
             putOrderInMap(order,asks);
         }
+        counter += 1;
+        if((counter % 5) != 0 && OPTIMIZATION_ON){
+            return;
+        }
+        Thread matchingThread = new Thread(this::match);
+        matchingThread.start();
     }
 
     public synchronized void match() {
